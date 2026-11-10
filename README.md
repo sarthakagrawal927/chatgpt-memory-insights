@@ -1,7 +1,14 @@
-# chatgpt-memory-insights
+# DaddyRad MCP source container
 
 This repository now hosts the **DaddyRad MCP server** ([`mcp/`](mcp/README.md)).
 Memory Map and its `memory-pack` CLI have moved to SaaS Maker.
+
+The repository still has its historical `chatgpt-memory-insights` name. That is
+a source-container name, not the server's product identity. The local, read-only
+MCP server serves the four DaddyRad native cores; it is not a ChatGPT-memory
+feature. The 2026-10-09 consolidation placed it here while preserving Memory
+Map's history. Do not count this checkout as another active Memory Map product
+or infer a new migration from the naming mismatch.
 
 ## Memory Map moved
 
@@ -47,8 +54,7 @@ DaddyRad native cores (PerformanceDaddy, ContextDaddy, StorageDaddy,
 BrowserDaddy). It moved here verbatim from
 [`Significant-Hobbies/daddyrad@bfdd8a81`](https://github.com/Significant-Hobbies/daddyrad/tree/bfdd8a813deff13fbc9a342ff865a28a50b724e3/mcp)
 with its macOS CI job. Build and configuration instructions are in
-[`mcp/README.md`](mcp/README.md); its local paths still say `daddyrad/mcp`, so
-substitute `chatgpt-memory-insights/mcp`. It builds with SwiftPM against sibling
+[`mcp/README.md`](mcp/README.md). It builds with SwiftPM against sibling
 checkouts of the four engine repositories (`../../performancedaddy` etc.), at
 the revisions pinned in `mcp/engine-revisions.json`.
 

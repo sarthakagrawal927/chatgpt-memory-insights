@@ -11,14 +11,14 @@ The four GUI apps do not need to run. DaddyRad's website is unchanged.
 ## Build and connect
 
 Source preview: `mcp-v0.1.0`. Clone the four public engine repositories listed
-in [engine-revisions.json](engine-revisions.json) alongside `daddyrad` and check
+in [engine-revisions.json](engine-revisions.json) alongside `chatgpt-memory-insights` and check
 out their recorded revisions before building this release. The manifest pins
 the tested native sources; tracking each sibling's current main may change APIs.
 For example, all five directories should share one parent folder:
 
 ```text
 workspace/
-  daddyrad/mcp/
+  chatgpt-memory-insights/mcp/
   performancedaddy/
   contextdaddy/
   storagedaddy/
@@ -34,7 +34,7 @@ Existing GUI dependencies may be resolved during SwiftPM planning, but the MCP
 target links only the core libraries and MCP SDK; Sparkle is not linked.
 
 ```sh
-cd /Users/sarthak/Desktop/fleet/daddyrad/mcp
+cd /Users/sarthak/Desktop/fleet/chatgpt-memory-insights/mcp
 swift build -c release --product daddyrad-mcp
 swift build -c release --show-bin-path
 ```
@@ -46,7 +46,7 @@ For this workspace, a generic client configuration is:
 {
   "mcpServers": {
     "daddyrad": {
-      "command": "/Users/sarthak/Desktop/fleet/daddyrad/mcp/.build/out/Products/Release/daddyrad-mcp",
+      "command": "/Users/sarthak/Desktop/fleet/chatgpt-memory-insights/mcp/.build/out/Products/Release/daddyrad-mcp",
       "args": []
     }
   }

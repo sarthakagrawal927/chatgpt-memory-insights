@@ -5,6 +5,16 @@ commands are authoritative. Protect stability, keep changes scoped, verify work
 with repo-local checks, and record durable follow-up in this repository's
 GitHub Issues.
 
+## Repository identity
+
+The historical `chatgpt-memory-insights` repository name does not describe its
+current executable. The owner-approved 2026-10-09 consolidation moved Memory Map
+and `memory-pack` into SaaS Maker and retained the DaddyRad MCP source preview
+here. The server serves four DaddyRad native cores; it is not a ChatGPT-memory
+feature. Do not count this checkout as an additional active Memory Map product.
+Use `PROJECT_STATUS.md` and the owner-local Site Health catalog's repository-review
+record to distinguish current source location from product classification.
+
 ## What lives here
 
 - `mcp/`: the DaddyRad MCP server, the single local read-only stdio server
