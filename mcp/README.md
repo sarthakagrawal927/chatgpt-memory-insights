@@ -39,14 +39,16 @@ swift build -c release --product daddyrad-mcp
 swift build -c release --show-bin-path
 ```
 
-Use the resulting absolute executable path as the command in your MCP client.
-For this workspace, a generic client configuration is:
+Append `/daddyrad-mcp` to the absolute directory printed by `--show-bin-path`
+and use that executable path as the command in your MCP client. Do not assume
+a particular SwiftPM build-directory layout. Replace the example command below
+with that path:
 
 ```json
 {
   "mcpServers": {
     "daddyrad": {
-      "command": "/Users/sarthak/Desktop/fleet/chatgpt-memory-insights/mcp/.build/out/Products/Release/daddyrad-mcp",
+      "command": "/absolute/build/bin/daddyrad-mcp",
       "args": []
     }
   }
