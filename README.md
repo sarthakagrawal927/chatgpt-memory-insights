@@ -5,10 +5,15 @@ Memory Map and its `memory-pack` CLI have moved to SaaS Maker.
 
 The repository still has its historical `chatgpt-memory-insights` name. That is
 a source-container name, not the server's product identity. The local, read-only
-MCP server serves the four DaddyRad native cores; it is not a ChatGPT-memory
-feature. The 2026-10-09 consolidation placed it here while preserving Memory
+MCP server serves the four DaddyRad native cores; it is not part of Memory Map.
+The 2026-10-09 consolidation placed it here while preserving Memory
 Map's history. Do not count this checkout as another active Memory Map product
 or infer a new migration from the naming mismatch.
+
+Memory Map's active catalog project still uses the stable ID
+`chatgpt-memory-insights`, with source in SaaS Maker's `apps/memory-map` and
+origin `https://chatgpt.significanthobbies.com`. That active project record and
+this legacy Git repository are different identities despite sharing a name.
 
 ## Memory Map moved
 

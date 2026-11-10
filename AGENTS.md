@@ -10,8 +10,11 @@ GitHub Issues.
 The historical `chatgpt-memory-insights` repository name does not describe its
 current executable. The owner-approved 2026-10-09 consolidation moved Memory Map
 and `memory-pack` into SaaS Maker and retained the DaddyRad MCP source preview
-here. The server serves four DaddyRad native cores; it is not a ChatGPT-memory
-feature. Do not count this checkout as an additional active Memory Map product.
+here. The server serves four DaddyRad native cores; it is not part of Memory Map.
+Memory Map's active project record still has ID `chatgpt-memory-insights`, with
+source in `saas-maker/apps/memory-map`. That project record and this Git repository
+are different identities. Do not count this checkout as an additional active
+Memory Map product or mark Memory Map inactive because of the repository's role.
 Use `PROJECT_STATUS.md` and the owner-local Site Health catalog's repository-review
 record to distinguish current source location from product classification.
 
