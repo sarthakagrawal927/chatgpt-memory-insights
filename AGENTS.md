@@ -7,8 +7,8 @@ GitHub Issues.
 
 ## Repository identity
 
-The historical `chatgpt-memory-insights` repository name does not describe its
-current executable. The owner-approved 2026-10-09 consolidation moved Memory Map
+This repository is `sarthakagrawal927/daddyrad-mcp` (renamed from
+`chatgpt-memory-insights` on 2026-11-11). The owner-approved 2026-10-09 consolidation moved Memory Map
 and `memory-pack` into SaaS Maker and retained the DaddyRad MCP source preview
 here. The server serves four DaddyRad native cores; it is not part of Memory Map.
 Memory Map's active project record still has ID `chatgpt-memory-insights`, with

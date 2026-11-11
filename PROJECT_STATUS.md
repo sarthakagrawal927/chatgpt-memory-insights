@@ -1,8 +1,11 @@
-# chatgpt-memory-insights — PROJECT STATUS
+# DaddyRad MCP — PROJECT STATUS
 
-Last updated: 2026-10-09
+Last updated: 2026-11-11
 
 ## Current
+
+- Repository and local checkout renamed from `chatgpt-memory-insights` to
+  `daddyrad-mcp` on 2026-11-11; history and legacy releases are preserved.
 
 - Hosts the DaddyRad MCP server in `mcp/` (moved from
   `Significant-Hobbies/daddyrad` on 2026-10-09, verbatim at `bfdd8a81`), with

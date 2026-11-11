@@ -3,17 +3,16 @@
 This repository now hosts the **DaddyRad MCP server** ([`mcp/`](mcp/README.md)).
 Memory Map and its `memory-pack` CLI have moved to SaaS Maker.
 
-The repository still has its historical `chatgpt-memory-insights` name. That is
-a source-container name, not the server's product identity. The local, read-only
-MCP server serves the four DaddyRad native cores; it is not part of Memory Map.
-The 2026-10-09 consolidation placed it here while preserving Memory
-Map's history. Do not count this checkout as another active Memory Map product
-or infer a new migration from the naming mismatch.
+The repository and local checkout were renamed to `daddyrad-mcp` on 2026-11-11
+so their name matches the source they contain. The local, read-only MCP server
+serves the four DaddyRad native cores; it is not part of Memory Map. The
+2026-10-09 consolidation placed it here while preserving Memory Map's history.
+The rename preserves that history and its releases.
 
 Memory Map's active catalog project still uses the stable ID
 `chatgpt-memory-insights`, with source in SaaS Maker's `apps/memory-map` and
 origin `https://chatgpt.significanthobbies.com`. That active project record and
-this legacy Git repository are different identities despite sharing a name.
+this Git repository are different identities.
 
 ## Memory Map moved
 
@@ -24,7 +23,7 @@ and deploys from there to the same Cloudflare Pages project and hostname, so
 saved browser-local indexes are unaffected.
 
 - Source absorbed from this repository at
-  [`950a85ce`](https://github.com/Significant-Hobbies/chatgpt-memory-insights/commit/950a85ce1fd4fb255d145e1c514e776426a9b4e8)
+  [`950a85ce`](https://github.com/sarthakagrawal927/daddyrad-mcp/commit/950a85ce1fd4fb255d145e1c514e776426a9b4e8)
   in [saas-maker@6ef53142](https://github.com/sass-maker/saas-maker/commit/6ef53142) (#211).
 - Deploy path and `memory-pack` move: [saas-maker@576a623e](https://github.com/sass-maker/saas-maker/commit/576a623ed0ca4e8ea883cbe6ce29d118cc480e47) (#215).
 - Cutover tracking: [sass-maker/saas-maker#210](https://github.com/sass-maker/saas-maker/issues/210).
@@ -42,7 +41,7 @@ curl -fsSL https://chatgpt.significanthobbies.com/install.sh | sh
 ```
 
 Releases `memory-pack-v0.1.0` to `memory-pack-v0.1.2` stay published on this
-repository's [Releases](https://github.com/Significant-Hobbies/chatgpt-memory-insights/releases);
+repository's [Releases](https://github.com/sarthakagrawal927/daddyrad-mcp/releases);
 the installer falls back to them until SaaS Maker publishes its first
 `memory-pack-v*` release.
 
