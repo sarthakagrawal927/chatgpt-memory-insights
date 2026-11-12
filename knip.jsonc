@@ -13,6 +13,8 @@
     // Invoked through the repository's metric wrapper.
     "@biomejs/biome",
     "jscpd",
+    // Invoked by the guarded manual deployment wrapper.
+    "wrangler",
     // Selected by name in Astro's Vite configuration.
     "lightningcss",
     // Loaded from the global stylesheet rather than a TypeScript import.

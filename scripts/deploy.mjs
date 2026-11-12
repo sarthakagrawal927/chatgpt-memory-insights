@@ -4,7 +4,7 @@ import { fileURLToPath } from "node:url";
 
 const repository = "sarthakagrawal927/chatgpt-memory-insights";
 
-export function verifyReleaseSource(run) {
+function verifyCheckout(run) {
   if (run("git", ["branch", "--show-current"]).trim() !== "main") {
     throw new Error("Deploy from main.");
   }
@@ -27,6 +27,10 @@ export function verifyReleaseSource(run) {
   if (remote.length !== 2 || remote[0] !== revision || remote[1] !== "refs/heads/main") {
     throw new Error("Checkout does not match current origin/main.");
   }
+  return revision;
+}
+
+function readPushRuns(run, revision) {
   const pages = JSON.parse(
     run("gh", [
       "api",
@@ -47,17 +51,25 @@ export function verifyReleaseSource(run) {
   if (pages.some((page) => page.total_count > runs.length)) {
     throw new Error("Incomplete GitHub CI evidence.");
   }
+  return runs;
+}
+
+function verifyPushRun(run, revision) {
+  if (
+    run.head_sha !== revision ||
+    run.head_branch !== "main" ||
+    run.event !== "push" ||
+    !Number.isSafeInteger(run.id) ||
+    !Number.isSafeInteger(run.run_attempt) ||
+    typeof run.path !== "string"
+  )
+    throw new Error("CI does not match the release source.");
+}
+
+function verifyPushCi(runs, revision) {
   const latest = new Map();
   for (const run of runs) {
-    if (
-      run.head_sha !== revision ||
-      run.head_branch !== "main" ||
-      run.event !== "push" ||
-      !Number.isSafeInteger(run.id) ||
-      !Number.isSafeInteger(run.run_attempt) ||
-      typeof run.path !== "string"
-    )
-      throw new Error("CI does not match the release source.");
+    verifyPushRun(run, revision);
     const previous = latest.get(run.path);
     if (
       !previous ||
@@ -71,6 +83,11 @@ export function verifyReleaseSource(run) {
     [...latest.values()].some((run) => run.status !== "completed" || run.conclusion !== "success")
   )
     throw new Error("Current source requires successful completed push CI.");
+}
+
+export function verifyReleaseSource(run) {
+  const revision = verifyCheckout(run);
+  verifyPushCi(readPushRuns(run, revision), revision);
   return revision;
 }
 
