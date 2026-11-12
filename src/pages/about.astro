@@ -1,0 +1,360 @@
+---
+import { publicPages } from "../data/public-identity";
+import { aboutCopy, aboutFacts } from "../data/public-content";
+import { capabilityRoutes } from "../data/public-content";
+import "../styles/global.css";
+import "../styles/about.css";
+import PublicClarity from "../components/public-clarity.astro";
+import StudioFooter from "../components/studio-footer.astro";
+
+const { title, description } = publicPages.about;
+const canonical = "https://chatgpt.significanthobbies.com/about/";
+const socialImage =
+  "https://raw.githubusercontent.com/sarthakagrawal927/chatgpt-memory-insights/main/artifacts/design/after-1440.png";
+const structuredData = {
+  "@context": "https://schema.org",
+  "@type": "WebPage",
+  name: title,
+  description,
+  url: canonical,
+  isPartOf: {
+    "@type": "WebSite",
+    name: "Memory Map",
+    url: "https://chatgpt.significanthobbies.com/",
+  },
+};
+
+
+
+const totalCapabilities = capabilityRoutes.reduce((sum, route) => sum + route.stops.length, 0);
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width" />
+    <link rel="canonical" href={canonical} />
+    <meta name="description" content={description} />
+    <meta name="ai-summary" content={description} />
+    <link rel="alternate" type="text/markdown" href="https://chatgpt.significanthobbies.com/about.md" />
+    <meta name="theme-color" content="#f3f5f2" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Memory Map" />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:image" content={socialImage} />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={socialImage} />
+    <script is:inline type="application/ld+json" set:html={JSON.stringify(structuredData)} />
+    <title>{title}</title>
+    <script is:inline async src="/scripts/posthog.js"></script>
+    <PublicClarity />
+    <script is:inline src="/app-health-log.js" defer></script>
+    <script is:inline defer src="https://health.sassmaker.com/tracker.js" data-key="ahk_pub_6e16be9c9385a6def153b05b1feb391a1205ca00a2c4cd263fb7428dbed4302c" data-project="app-import-de5017d248ba97d2e2e54643dcabc91b3a53f820644e3d8d324d74364847fe58" data-identity="persistent"></script>
+  </head>
+  <body class="about-page">
+    <a class="skip-link" href="#main">Skip to main content</a>
+
+    <header class="about-nav">
+      <a class="brand" href="/" aria-label="Memory Map analysis app">
+        <svg viewBox="0 0 36 36" aria-hidden="true">
+          <path d="M7 8 17 15 29 7M17 15l1 14M7 27l11 2 11-9" />
+          <circle cx="7" cy="8" r="3" />
+          <circle cx="29" cy="7" r="3" />
+          <circle cx="17" cy="15" r="3" />
+          <circle cx="7" cy="27" r="3" />
+          <circle cx="18" cy="29" r="3" />
+          <circle cx="29" cy="20" r="3" />
+        </svg>
+        <span>Memory Map</span>
+      </a>
+      <nav aria-label="About Memory Map">
+        <a href="#capabilities">What it finds</a>
+        <a href="#privacy">Privacy</a>
+        <a href="#export">Get the ZIP</a>
+        <a href="/changelog/">Changelog</a>
+      </nav>
+      <a class="about-nav-action" href="/">Analyze my ZIP</a>
+    </header>
+    <nav class="about-section-nav" aria-label="Page sections">
+      <a href="#capabilities"><i class="route-dot route-blue"></i>What it finds</a>
+      <a href="#privacy"><i class="route-dot route-teal"></i>Privacy</a>
+      <a href="#export"><i class="route-dot route-amber"></i>Get the ZIP</a>
+    </nav>
+
+    <main id="main">
+      <!--
+      THESIS: A ChatGPT archive becomes usable memory, not a nostalgic statistics recap.
+      OWN-WORLD: Cool map paper, transit rules, labelled interchanges, flat platform boards, and evidence annotations.
+      STORY: Recognize the problem, see the memory mechanism, inspect every route, trust the privacy boundary, then analyze a ZIP.
+      FIRST VIEWPORT: Outcome and one primary action at left; a large illustrative topic-memory interchange at right; verified counts form the platform edge.
+      FORM: Capability atlas, grounded structure six, transit-stack staging, preserve lane, concept seed 2f09553c.
+      -->
+      <section class="about-hero" aria-labelledby="about-heading">
+        <div class="about-hero-copy">
+          <p class="map-key">{aboutCopy[0].text}</p>
+          <h1 id="about-heading">{aboutCopy[1].text}</h1>
+          <p class="about-lede">{aboutCopy[2].text}</p>
+          <a class="about-primary-action" href="/">Analyze my ChatGPT ZIP</a>
+          <p class="about-hero-proof">
+            <strong>{aboutFacts[0].value}</strong> {aboutFacts[0].label} <span aria-hidden="true">·</span>
+            <strong>{aboutFacts[1].value}</strong> {aboutFacts[1].label} <span aria-hidden="true">·</span>
+            <strong>{aboutFacts[2].value}</strong> {aboutFacts[2].label} <span aria-hidden="true">·</span>
+            <strong>{aboutFacts[3].value}</strong> {aboutFacts[3].label}
+          </p>
+        </div>
+
+        <figure class="about-map-preview">
+          <figcaption>
+            <span>Illustrative preview</span>
+            <strong>{aboutCopy[7].text}</strong>
+          </figcaption>
+          <svg viewBox="0 0 760 570" aria-hidden="true">
+            <g class="preview-grid">
+              <path d="M44 95H716M44 190H716M44 285H716M44 380H716M44 475H716" />
+              <path d="M140 48V522M260 48V522M380 48V522M500 48V522M620 48V522" />
+            </g>
+            <g class="preview-lines">
+              <path class="preview-blue" d="M75 430 220 330 390 330 555 205 690 205" />
+              <path class="preview-red" d="M105 145 220 235 390 330 540 430 675 430" />
+              <path class="preview-teal" d="M220 75V235L390 330 555 330" />
+              <path class="preview-violet" d="M390 95V330L555 485" />
+            </g>
+            <g class="preview-stops">
+              <circle class="stop-blue" cx="75" cy="430" r="9" />
+              <circle class="stop-red" cx="105" cy="145" r="9" />
+              <circle class="stop-teal" cx="220" cy="75" r="9" />
+              <circle class="stop-red" cx="220" cy="235" r="9" />
+              <circle class="stop-blue" cx="220" cy="330" r="9" />
+              <circle class="stop-violet" cx="390" cy="95" r="9" />
+              <circle class="stop-interchange" cx="390" cy="330" r="18" />
+              <circle class="stop-teal" cx="555" cy="330" r="9" />
+              <circle class="stop-blue" cx="555" cy="205" r="9" />
+              <circle class="stop-violet" cx="555" cy="485" r="9" />
+              <circle class="stop-red" cx="675" cy="430" r="9" />
+              <circle class="stop-blue" cx="690" cy="205" r="9" />
+            </g>
+          </svg>
+          <div class="preview-label label-question">
+            <span>Repeated question</span><strong>{aboutCopy[8].text}</strong>
+          </div>
+          <div class="preview-label label-topic">
+            <span>Connected topic</span><strong>{aboutCopy[9].text}</strong>
+          </div>
+          <div class="preview-label label-memory">
+            <span>Memory updated</span><strong>{aboutCopy[10].text}</strong>
+          </div>
+          <div class="preview-label label-search">
+            <span>Search destination</span><strong>{aboutCopy[11].text}</strong>
+          </div>
+          <div class="preview-interchange-label">
+            <span>Evidence interchange</span>
+            <strong>{aboutCopy[12].text}</strong>
+          </div>
+        </figure>
+
+        <div class="about-platform-board" aria-label="What the product connects">
+          <span>Questions</span>
+          <i aria-hidden="true"></i>
+          <span>Topics</span>
+          <i aria-hidden="true"></i>
+          <span>Facts</span>
+          <i aria-hidden="true"></i>
+          <span>Time</span>
+          <i aria-hidden="true"></i>
+          <span>Sources</span>
+        </div>
+      </section>
+
+      <section class="about-problem" aria-labelledby="problem-heading">
+        <p class="map-key">{aboutCopy[13].text}</p>
+        <div>
+          <h2 id="problem-heading">{aboutCopy[14].text}</h2>
+          <div class="about-problem-copy">
+            <p>{aboutCopy[15].text}</p>
+            <p>{aboutCopy[16].text}</p>
+          </div>
+        </div>
+      </section>
+
+      <section id="capabilities" class="capability-atlas" aria-labelledby="capability-heading">
+        <header class="about-section-heading">
+          <div>
+            <p class="map-key">{aboutCopy[17].text}</p>
+            <h2 id="capability-heading">{aboutCopy[18].text}</h2>
+          </div>
+          <p>
+            {totalCapabilities} shipped capabilities across five routes. These are current product
+            behaviors, not a roadmap.
+          </p>
+        </header>
+
+        <div class="capability-routes">
+          {
+            capabilityRoutes.map((route) => (
+              <details class:list={["capability-route", route.className]} open={route.code === "A"}>
+                <summary>
+                  <span class="route-code" aria-hidden="true">{route.code}</span>
+                  <div>
+                    <h3>{route.title}</h3>
+                    <p>{route.summary}</p>
+                  </div>
+                  <span class="route-count">{route.stops.length} stops</span>
+                </summary>
+                <ol>
+                  {route.stops.map((stop) => (
+                    <li>
+                      <span class="capability-stop" aria-hidden="true" />
+                      <div>
+                        <strong>{stop.title}</strong>
+                        <p>{stop.detail}</p>
+                      </div>
+                    </li>
+                  ))}
+                </ol>
+              </details>
+            ))
+          }
+        </div>
+      </section>
+
+      <section id="privacy" class="privacy-architecture" aria-labelledby="privacy-heading">
+        <header class="about-section-heading">
+          <div>
+            <p class="map-key">{aboutCopy[19].text}</p>
+            <h2 id="privacy-heading">{aboutCopy[20].text}</h2>
+          </div>
+          <p>{aboutCopy[21].text}</p>
+        </header>
+
+        <ol class="privacy-route">
+          <li>
+            <span>1</span>
+            <strong>{aboutCopy[22].text}</strong>
+            <p>{aboutCopy[23].text}</p>
+          </li>
+          <li>
+            <span>2</span>
+            <strong>{aboutCopy[24].text}</strong>
+            <p>{aboutCopy[25].text}</p>
+          </li>
+          <li>
+            <span>3</span>
+            <strong>{aboutCopy[26].text}</strong>
+            <p>{aboutCopy[27].text}</p>
+          </li>
+          <li>
+            <span>4</span>
+            <strong>{aboutCopy[28].text}</strong>
+            <p>{aboutCopy[29].text}</p>
+          </li>
+        </ol>
+
+        <div class="privacy-boundaries">
+          <div>
+            <span class="boundary-yes">Stays here</span>
+            <p>{aboutCopy[30].text}</p>
+          </div>
+          <div>
+            <span class="boundary-out">Comes in</span>
+            <p>{aboutCopy[31].text}</p>
+          </div>
+          <div>
+            <span class="boundary-no">Does not exist</span>
+            <p>{aboutCopy[32].text}</p>
+          </div>
+          <div>
+            <span class="boundary-out">Public page analytics</span>
+            <p>{aboutCopy[33].text}</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="fit-board" aria-labelledby="fit-heading">
+        <header>
+          <p class="map-key">{aboutCopy[34].text}</p>
+          <h2 id="fit-heading">{aboutCopy[35].text}</h2>
+        </header>
+        <div class="fit-columns">
+          <div>
+            <h3>{aboutCopy[36].text}</h3>
+            <ul>
+              <li>{aboutCopy[37].text}</li>
+              <li>{aboutCopy[38].text}</li>
+              <li>{aboutCopy[39].text}</li>
+              <li>{aboutCopy[40].text}</li>
+              <li>{aboutCopy[41].text}</li>
+            </ul>
+          </div>
+          <div>
+            <h3>{aboutCopy[42].text}</h3>
+            <ul>
+              <li>{aboutCopy[43].text}</li>
+              <li>{aboutCopy[44].text}</li>
+              <li>{aboutCopy[45].text}</li>
+              <li>{aboutCopy[46].text}</li>
+              <li>{aboutCopy[47].text}</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <section id="export" class="about-export" aria-labelledby="export-heading">
+        <div class="about-export-intro">
+          <p class="map-key">{aboutCopy[48].text}</p>
+          <h2 id="export-heading">{aboutCopy[49].text}</h2>
+          <p>{aboutCopy[50].text}</p>
+        </div>
+        <ol>
+          <li>
+            <span>1</span>
+            <p>
+              Sign in to ChatGPT, open your profile menu, and choose{" "}
+              <strong>{aboutCopy[51].text}</strong>.
+            </p>
+          </li>
+          <li>
+            <span>2</span>
+            <p>
+              Under <strong>{aboutCopy[52].text}</strong>, choose <strong>{aboutCopy[53].text}</strong>, then{" "}
+              <strong>{aboutCopy[54].text}</strong>.
+            </p>
+          </li>
+          <li>
+            <span>3</span>
+            <p>{aboutCopy[55].text}</p>
+          </li>
+        </ol>
+        <aside>
+          <p>{aboutCopy[56].text}</p>
+          <nav aria-label="ChatGPT export resources">
+            <a
+              href="https://help.openai.com/en/articles/7260999-how-do-i-export-my-chatgpt-history-and-data"
+              target="_blank"
+              rel="noreferrer">Official instructions ↗</a
+            >
+            <a href="https://privacy.openai.com/" target="_blank" rel="noreferrer"
+              >Privacy Portal ↗</a
+            >
+          </nav>
+        </aside>
+      </section>
+
+      <section class="about-final" aria-labelledby="final-heading">
+        <div>
+          <p class="map-key">{aboutCopy[57].text}</p>
+          <h2 id="final-heading">{aboutCopy[58].text}</h2>
+        </div>
+        <a class="about-primary-action" href="/" data-app-health-event="analysis_opened">Analyze my ChatGPT ZIP</a>
+        <p>{aboutCopy[59].text}</p>
+      </section>
+    </main>
+
+    <StudioFooter summary="Not a wrapped. Not a diagnosis. A map back to your own evidence." analyze />
+  </body>
+</html>

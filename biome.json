@@ -1,0 +1,89 @@
+{
+  "$schema": "https://biomejs.dev/schemas/2.5.1/schema.json",
+  "extends": [
+    "ultracite/biome/core",
+    "ultracite/biome/astro",
+    "ultracite/biome/vitest"
+  ],
+  "vcs": { "enabled": true, "clientKind": "git", "useIgnoreFile": true },
+  "files": {
+    "ignoreUnknown": true,
+    "includes": [
+      "!dist",
+      "!node_modules",
+      "!public",
+      "!pnpm-lock.yaml",
+      "!artifacts",
+      "!packer",
+      "!vendor"
+    ]
+  },
+  "formatter": {
+    "enabled": false,
+    "indentStyle": "space",
+    "indentWidth": 2,
+    "lineWidth": 100,
+    "lineEnding": "lf"
+  },
+  "json": { "formatter": { "enabled": false } },
+  "linter": {
+    "enabled": true,
+    "rules": {
+      "a11y": {
+        "useAriaPropsSupportedByRole": "off",
+        "useSemanticElements": "off"
+      },
+      "complexity": {
+        "noExcessiveCognitiveComplexity": "off",
+        "noForEach": "off",
+        "noVoid": "off",
+        "useSimplifiedLogicExpression": "off"
+      },
+      "performance": {
+        "noAwaitInLoops": "off",
+        "useTopLevelRegex": "off"
+      },
+      "style": {
+        "noDescendingSpecificity": "off",
+        "noIncrementDecrement": "off",
+        "noNegationElse": "off",
+        "noNestedTernary": "off",
+        "noNonNullAssertion": "off",
+        "useBlockStatements": "off",
+        "useConsistentArrayType": "off",
+        "useConsistentMethodSignatures": "off",
+        "useConsistentTypeDefinitions": "off",
+        "useDestructuring": "off",
+        "useNumberNamespace": "off",
+        "useNumericSeparators": "off",
+        "useReadonlyClassProperties": "off"
+      },
+      "suspicious": {
+        "noAlert": "off",
+        "noBitwiseOperators": "off",
+        "noShadow": "off",
+        "noUnnecessaryConditions": "off",
+        "useArraySortCompare": "off",
+        "useAwait": "off"
+      }
+    }
+  },
+  "assist": {
+    "enabled": true,
+    "actions": {
+      "source": {
+        "organizeImports": "off",
+        "useSortedAttributes": "off",
+        "useSortedKeys": "off",
+        "useSortedPackageJson": "off",
+        "useSortedProperties": "off"
+      }
+    }
+  },
+  "overrides": [
+    {
+      "includes": ["**/*.astro", "**/*.css"],
+      "formatter": { "enabled": false }
+    }
+  ]
+}

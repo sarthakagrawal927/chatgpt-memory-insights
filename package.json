@@ -1,0 +1,58 @@
+{
+  "name": "chatgpt-memory-insights",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=22.12.0"
+  },
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build && node scripts/check-ai-readable.mjs",
+    "format:check": "node scripts/check-code-health.mjs format",
+    "lint": "ultracite check .",
+    "preview": "astro preview",
+    "typecheck": "astro check",
+    "test": "vitest run",
+    "test:import": "node scripts/qualify-import.mjs",
+    "test:coverage": "vitest run --coverage --coverage.reporter=text --coverage.reporter=json-summary --coverage.thresholds.lines=54 --coverage.thresholds.statements=52 --coverage.thresholds.functions=54 --coverage.thresholds.branches=45",
+    "knip": "knip --no-exit-code --reporter symbols",
+    "knip:strict": "knip --reporter symbols --no-config-hints",
+    "quality:unused": "pnpm run knip:strict",
+    "quality:complexity": "node scripts/check-code-health.mjs complexity",
+    "quality:duplication": "node scripts/check-code-health.mjs duplication",
+    "quality:cycles": "knip --cycles --no-config-hints",
+    "quality:dependencies": "node scripts/check-code-health.mjs dependencies",
+    "quality:suppressions": "node scripts/check-code-health.mjs suppressions",
+    "quality:hygiene": "node scripts/check-code-health.mjs hygiene",
+    "quality": "pnpm run format:check && pnpm run lint && pnpm run typecheck && pnpm run test:coverage && pnpm run quality:unused && pnpm run quality:complexity && pnpm run quality:duplication && pnpm run quality:cycles && pnpm run quality:dependencies && pnpm run quality:suppressions && pnpm run quality:hygiene && pnpm run build",
+    "check": "pnpm run quality && pnpm run test:deployment",
+    "deploy": "node scripts/deploy.mjs",
+    "test:deployment": "node --test scripts/deploy.test.mjs"
+  },
+  "dependencies": {
+    "@huggingface/transformers": "3.8.1",
+    "@observablehq/plot": "0.6.17",
+    "@zip.js/zip.js": "2.8.34",
+    "astro": "7.4.2"
+  },
+  "devDependencies": {
+    "@astrojs/check": "0.9.6",
+    "@biomejs/biome": "2.5.5",
+    "@playwright/test": "1.62.0",
+    "@tailwindcss/vite": "4.3.3",
+    "@vitest/coverage-v8": "4.1.12",
+    "jscpd": "5.0.14",
+    "knip": "6.42.1",
+    "lightningcss": "1.30.2",
+    "tailwindcss": "4.3.3",
+    "typescript": "5.9.3",
+    "ultracite": "7.12.4",
+    "vite": "8.1.6",
+    "vitest": "4.1.12",
+    "wrangler": "4.125.0"
+  },
+  "description": "Memory Map: browser-local ChatGPT export analysis, deployed to the chatgpt-memory-insights Cloudflare Pages project (chatgpt.significanthobbies.com).",
+  "packageManager": "pnpm@10.33.2",
+  "license": "MIT"
+}

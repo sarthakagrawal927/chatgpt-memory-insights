@@ -1,0 +1,44 @@
+name: memory-pack CI
+
+# Rust checks for the standalone memory-pack CLI.
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - "packer/**"
+      - ".github/workflows/memory-pack-*.yml"
+  push:
+    branches: [main]
+    paths:
+      - "packer/**"
+      - ".github/workflows/memory-pack-*.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  packer:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    defaults:
+      run:
+        working-directory: packer
+    steps:
+      - uses: actions/checkout@v6
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          components: rustfmt, clippy
+      - uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: packer
+      - run: cargo fmt --check
+      - run: cargo clippy --all-targets -- -D warnings
+      - run: cargo test
+      - name: Smoke the installer script
+        working-directory: public
+        run: sh -n install.sh

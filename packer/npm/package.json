@@ -1,0 +1,36 @@
+{
+  "name": "memory-pack",
+  "version": "0.1.2",
+  "description": "Pack local Claude Code and Codex sessions into a Memory Map archive",
+  "bin": {
+    "memory-pack": "bin/memory-pack.js"
+  },
+  "files": [
+    "bin",
+    "README.md"
+  ],
+  "keywords": [
+    "claude-code",
+    "codex",
+    "sessions",
+    "transcripts",
+    "export"
+  ],
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sarthakagrawal927/chatgpt-memory-insights.git",
+    "directory": "packer"
+  },
+  "homepage": "https://chatgpt.significanthobbies.com",
+  "engines": {
+    "node": ">=18"
+  },
+  "optionalDependencies": {
+    "@memory-pack/darwin-arm64": "0.1.2",
+    "@memory-pack/darwin-x64": "0.1.2",
+    "@memory-pack/linux-arm64": "0.1.2",
+    "@memory-pack/linux-x64": "0.1.2",
+    "@memory-pack/win32-x64": "0.1.2"
+  }
+}

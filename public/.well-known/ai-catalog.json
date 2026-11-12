@@ -1,0 +1,21 @@
+{
+  "specVersion": "1.0",
+  "host": {
+    "displayName": "Memory Map",
+    "identifier": "did:web:chatgpt.significanthobbies.com"
+  },
+  "entries": [
+    {
+      "identifier": "urn:air:chatgpt.significanthobbies.com:catalog:public-surfaces",
+      "displayName": "Memory Map public surface catalog",
+      "type": "application/json",
+      "url": "https://chatgpt.significanthobbies.com/api/ai"
+    },
+    {
+      "identifier": "urn:air:chatgpt.significanthobbies.com:skills:explore-memory-map",
+      "displayName": "Explore Memory Map agent skill",
+      "type": "text/markdown",
+      "url": "https://chatgpt.significanthobbies.com/.well-known/agent-skills/explore-memory-map/SKILL.md"
+    }
+  ]
+}

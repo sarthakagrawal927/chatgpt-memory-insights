@@ -1,52 +1,40 @@
-## Repository operating rules
+# Memory Map / ChatGPT Insights
 
-This repository is independently operable. Its tracked instructions and
-commands are authoritative. Protect stability, keep changes scoped, verify work
-with repo-local checks, and record durable follow-up in this repository's
-GitHub Issues.
+This repository owns the browser-local ChatGPT-export analysis application and
+the `memory-pack` Rust CLI in `packer/`. They were restored from SaaS Maker on
+2026-11-12 at the owner's request. Historical commits, design receipts,
+qualification evidence and releases are preserved. DaddyRad MCP now belongs to
+SaaS Maker MCP Connections at `apps/mcp/local/daddyrad`; do not add it here.
 
-## Repository identity
+## Runtime and privacy
 
-This repository is `sarthakagrawal927/daddyrad-mcp` (renamed from
-`chatgpt-memory-insights` on 2026-11-11). The owner-approved 2026-10-09 consolidation moved Memory Map
-and `memory-pack` into SaaS Maker and retained the DaddyRad MCP source preview
-here. The server serves four DaddyRad native cores; it is not part of Memory Map.
-Memory Map's active project record still has ID `chatgpt-memory-insights`, with
-source in `saas-maker/apps/memory-map`. That project record and this Git repository
-are different identities. Do not count this checkout as an additional active
-Memory Map product or mark Memory Map inactive because of the repository's role.
-Use `PROJECT_STATUS.md` and the owner-local Site Health catalog's repository-review
-record to distinguish current source location from product classification.
+- Archive contents and derived memory stay in the visitor's browser. Do not add
+  a hosted archive-analysis API or send conversation content to an AI gateway.
+- Preserve origin `https://chatgpt.significanthobbies.com` and Pages project
+  `chatgpt-memory-insights`. The origin owns visitors' saved IndexedDB indexes.
+- `vendor/agent-surfaces` is a minimal pinned snapshot of SaaS Maker's shared
+  public-document helpers. Provenance is recorded there; builds require no
+  sibling checkout. Footer assets are already vendored in `public/`.
+- Follow the exact pnpm pin and frozen lockfile.
 
-## What lives here
-
-- `mcp/`: the DaddyRad MCP server, the single local read-only stdio server
-  across the four DaddyRad native cores. Build it with SwiftPM from sibling
-  engine checkouts (`../../performancedaddy`, `../../contextdaddy`,
-  `../../storagedaddy`, `../../browserdaddy`); see `mcp/README.md`. It exposes
-  no network endpoint and does not access the GUI apps' live state. Keep file
-  access startup-selected, resource use bounded and process identities opt-in.
-- History only: Memory Map's design receipts (`artifacts/design`, referenced by
-  the live site's social images, so keep them), qualification evidence
-  (`docs/qualification`) and agent metadata.
-
-Memory Map (the app) and `memory-pack` moved to `sass-maker/saas-maker`
-`apps/memory-map`; do not re-add them here. Its deploys and releases come from
-SaaS Maker.
-
-## Check
-
-CI (`.github/workflows/ci.yml`, macOS) validates `mcp/engine-revisions.json`,
-checks out the four engines at those exact revisions, then runs:
+## Commands
 
 ```sh
-cd mcp
-swift test --filter DiagnosticsTests
-swift build -c release --product daddyrad-mcp
-python3 scripts/verify-mcp.py "$(swift build -c release --show-bin-path)/daddyrad-mcp"
+pnpm install --frozen-lockfile
+pnpm check
+pnpm run test:import
+cd packer && cargo fmt --check && cargo clippy --all-targets -- -D warnings && cargo test
 ```
 
-## Work tracking
+`pnpm check` includes the established quality gates, production build and
+deployment-guard tests. CI additionally qualifies a synthetic browser import.
+`memory-pack-ci.yml` and `memory-pack-release.yml` own the CLI checks and
+tag-triggered binaries. Do not publish a tag merely to test a migration.
 
-- GitHub Issues is the sole operational work queue.
-- Use `PROJECT_STATUS.md` only for durable current truth.
+## Deployment and work tracking
+
+Deploy manually with `pnpm deploy` from clean current `main` after exact-source
+push CI succeeds. `node scripts/deploy.mjs --dry-run` checks readiness without
+uploading. Existing production configuration and rollback remain unchanged.
+Track work in this repository's GitHub Issues. Use `PROJECT_STATUS.md` only for
+durable current truth. Preserve unrelated local work and retained evidence.

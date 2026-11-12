@@ -1,0 +1,57 @@
+---
+interface Props {
+  analyze?: boolean;
+  summary: string;
+}
+const { summary, analyze = false } = Astro.props;
+const config = {
+  summary,
+  art: {
+    src: "/footer-art/memory-map.webp",
+    width: 2171,
+    height: 724,
+    alt: "A cool cartography workshop centers an open transit-like atlas and a source slip physically connected to one route. A boxed conversation archive and folded map margins occupy the wings.",
+    focalX: 50,
+    focalY: 50,
+    credit: "Original illustration for Memory Map",
+  },
+  groups: [
+    {
+      title: "Explore",
+      links: [
+        ...(analyze ? [{ label: "Analyze my ChatGPT ZIP", href: "/" }] : []),
+        { label: "What it finds", href: "/about/" },
+        { label: "Changelog", href: "/changelog/" },
+        { label: "Agent guide", href: "/agents.md" },
+      ],
+    },
+    {
+      title: "Privacy & source",
+      links: [
+        { label: "Privacy", href: "/about/#privacy" },
+        {
+          label: "GitHub repository",
+          href: "https://github.com/sarthakagrawal927/chatgpt-memory-insights",
+        },
+      ],
+    },
+  ],
+};
+---
+<link rel="stylesheet" href="/footer.css" />
+<script is:inline type="module" src="/footer.js"></script>
+<style is:global>
+  /* Page element rules are unlayered and would beat the library's layered footer CSS. */
+  studio-footer { display: block; }
+  studio-footer *:not(#studio-footer-reset), studio-footer *:not(#studio-footer-reset)::before, studio-footer *:not(#studio-footer-reset)::after { all: revert-layer; }
+</style>
+<studio-footer
+  product="Memory Map"
+  url="https://chatgpt.significanthobbies.com"
+  catalog-id="chatgpt-memory-insights"
+  capture="newsletter"
+  variant="studio"
+  privacy-url="https://chatgpt.significanthobbies.com/about/#privacy"
+>
+  <script is:inline type="application/json" set:html={JSON.stringify(config).replace(/</g, "\\u003c")} />
+</studio-footer>

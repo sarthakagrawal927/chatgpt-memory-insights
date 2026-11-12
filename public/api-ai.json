@@ -1,0 +1,45 @@
+{
+  "name": "Memory Map",
+  "version": "1",
+  "url": "https://chatgpt.significanthobbies.com",
+  "llms": "https://chatgpt.significanthobbies.com/llms.txt",
+  "llmsFull": "https://chatgpt.significanthobbies.com/llms-full.txt",
+  "sitemap": "https://chatgpt.significanthobbies.com/sitemap.xml",
+  "robots": "https://chatgpt.significanthobbies.com/robots.txt",
+  "openapi": "https://chatgpt.significanthobbies.com/openapi.json",
+  "agentGuidance": "https://chatgpt.significanthobbies.com/agents.md",
+  "agentSkills": "https://chatgpt.significanthobbies.com/.well-known/agent-skills/index.json",
+  "aiCatalog": "https://chatgpt.significanthobbies.com/.well-known/ai-catalog.json",
+  "commercialState": "https://chatgpt.significanthobbies.com/pricing.md",
+  "markdown": {
+    "suffix": ".md",
+    "negotiation": true
+  },
+  "surfaces": [
+    {
+      "id": "home",
+      "url": "https://chatgpt.significanthobbies.com/",
+      "md": "https://chatgpt.significanthobbies.com/index.md",
+      "kind": "static",
+      "description": "Product home"
+    },
+    {
+      "id": "what-it-finds",
+      "url": "https://chatgpt.significanthobbies.com/about/",
+      "md": "https://chatgpt.significanthobbies.com/about.md",
+      "kind": "static",
+      "description": "Capabilities and privacy architecture"
+    },
+    {
+      "id": "changelog",
+      "url": "https://chatgpt.significanthobbies.com/changelog/",
+      "md": "https://chatgpt.significanthobbies.com/changelog.md",
+      "kind": "static",
+      "description": "Verified product releases"
+    }
+  ],
+  "auth": {
+    "public": true,
+    "notes": "The current web app has no Memory Map account. Public machine surfaces are read-only documentation and never accept archives or derived memory."
+  }
+}

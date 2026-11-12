@@ -1,0 +1,21 @@
+{
+  "$schema": "https://unpkg.com/knip@6/schema.json",
+  "entry": [
+    "astro.config.ts",
+    "scripts/**/*.mjs",
+    "src/pages/**/*.astro",
+    "src/scripts/**/*.ts",
+    "src/workers/**/*.ts",
+    "src/**/*.test.ts"
+  ],
+  "project": ["astro.config.ts", "scripts/**/*.mjs", "src/**/*.{astro,ts}"],
+  "ignoreDependencies": [
+    // Invoked through the repository's metric wrapper.
+    "@biomejs/biome",
+    "jscpd",
+    // Selected by name in Astro's Vite configuration.
+    "lightningcss",
+    // Loaded from the global stylesheet rather than a TypeScript import.
+    "tailwindcss"
+  ]
+}
