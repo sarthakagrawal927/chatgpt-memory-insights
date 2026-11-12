@@ -11,7 +11,3 @@ coverage/
 *.db
 *.db-journal
 .fleet-local/
-
-# SwiftPM (mcp/)
-.build/
-.swiftpm/

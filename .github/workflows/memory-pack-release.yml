@@ -1,0 +1,122 @@
+name: memory-pack release
+
+# Tag a release with `memory-pack-v<version>` to publish binaries.
+# A manual run (workflow_dispatch) builds every target and uploads the
+# binaries as workflow artifacts without publishing: the release dry run.
+# Restored from SaaS Maker after the owner separated ChatGPT Insights.
+on:
+  push:
+    tags: ["memory-pack-v*"]
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    name: ${{ matrix.target }}
+    runs-on: ${{ matrix.runner }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - target: aarch64-apple-darwin
+            runner: macos-latest
+          # Cross-compiled from Apple Silicon: the macos-13 Intel image is
+          # retired, and Xcode ships both macOS architectures.
+          - target: x86_64-apple-darwin
+            runner: macos-latest
+          - target: x86_64-unknown-linux-musl
+            runner: ubuntu-latest
+          - target: aarch64-unknown-linux-musl
+            runner: ubuntu-24.04-arm
+          - target: x86_64-pc-windows-msvc
+            runner: windows-latest
+    defaults:
+      run:
+        working-directory: packer
+    steps:
+      - uses: actions/checkout@v6
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: ${{ matrix.target }}
+      - uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: packer
+          key: ${{ matrix.target }}
+      - name: Install the musl linker
+        if: endsWith(matrix.target, '-musl')
+        run: sudo apt-get update && sudo apt-get install -y musl-tools
+      - run: cargo build --release --target ${{ matrix.target }}
+      - name: Name the artifact after its target
+        shell: bash
+        run: |
+          mkdir -p dist
+          if [ "${{ runner.os }}" = "Windows" ]; then
+            cp "target/${{ matrix.target }}/release/memory-pack.exe" "dist/memory-pack-${{ matrix.target }}.exe"
+          else
+            cp "target/${{ matrix.target }}/release/memory-pack" "dist/memory-pack-${{ matrix.target }}"
+          fi
+      - uses: actions/upload-artifact@v4
+        with:
+          name: memory-pack-${{ matrix.target }}
+          path: packer/dist/*
+
+  publish:
+    needs: build
+    runs-on: ubuntu-latest
+    if: startsWith(github.ref, 'refs/tags/')
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          path: dist
+          merge-multiple: true
+      - name: Checksum every binary
+        working-directory: dist
+        run: sha256sum memory-pack-* > SHA256SUMS
+      - uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            dist/memory-pack-*
+            dist/SHA256SUMS
+          generate_release_notes: true
+          # install.sh resolves the newest memory-pack-v* tag itself.
+          make_latest: false
+
+  # Optional: runs only once an NPM_TOKEN secret exists. The installer script
+  # and the GitHub release do not depend on it.
+  npm:
+    needs: build
+    runs-on: ubuntu-latest
+    if: startsWith(github.ref, 'refs/tags/') && vars.PUBLISH_TO_NPM == 'true'
+    defaults:
+      run:
+        working-directory: packer
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 24
+          registry-url: https://registry.npmjs.org
+      - uses: actions/download-artifact@v4
+        with:
+          path: packer/dist
+          merge-multiple: true
+      - run: node npm/build-platform-packages.mjs
+      - name: Publish the platform packages
+        working-directory: packer/npm/platforms
+        run: |
+          for directory in */; do
+            npm publish "$directory" --access public
+          done
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+      - name: Publish the launcher
+        working-directory: packer/npm
+        run: npm publish --access public
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}

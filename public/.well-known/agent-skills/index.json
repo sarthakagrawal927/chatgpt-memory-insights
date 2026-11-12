@@ -1,0 +1,12 @@
+{
+  "$schema": "https://schemas.agentskills.io/discovery/0.2.0/schema.json",
+  "skills": [
+    {
+      "name": "explore-memory-map",
+      "type": "skill-md",
+      "description": "Guide a person through private, browser-local analysis of their ChatGPT export without asking them to upload the archive.",
+      "url": "https://chatgpt.significanthobbies.com/.well-known/agent-skills/explore-memory-map/SKILL.md",
+      "digest": "sha256:9ea13ebd210b1543b61dce050c6fb8161b356152dc9c506ffcd864f8aa76b00a"
+    }
+  ]
+}

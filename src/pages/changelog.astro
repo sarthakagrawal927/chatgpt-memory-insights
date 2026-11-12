@@ -1,0 +1,117 @@
+---
+import { publicPages } from "../data/public-identity";
+import { releases } from "../data/public-content";
+import "../styles/global.css";
+import "../styles/about.css";
+import PublicClarity from "../components/public-clarity.astro";
+import StudioFooter from "../components/studio-footer.astro";
+
+const repository = "https://github.com/sarthakagrawal927/chatgpt-memory-insights";
+const { title, description } = publicPages.changelog;
+const canonical = "https://chatgpt.significanthobbies.com/changelog/";
+const socialImage =
+  "https://raw.githubusercontent.com/sarthakagrawal927/chatgpt-memory-insights/main/artifacts/design/after-1440.png";
+const structuredData = {
+  "@context": "https://schema.org",
+  "@type": "CollectionPage",
+  name: title,
+  description,
+  url: canonical,
+  isPartOf: {
+    "@type": "WebSite",
+    name: "Memory Map",
+    url: "https://chatgpt.significanthobbies.com/",
+  },
+};
+
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width" />
+    <meta name="description" content={description} />
+    <meta name="ai-summary" content={description} />
+    <link rel="alternate" type="text/markdown" href="https://chatgpt.significanthobbies.com/changelog.md" />
+    <meta name="theme-color" content="#f3f5f2" />
+    <link rel="canonical" href={canonical} />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Memory Map" />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:image" content={socialImage} />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={socialImage} />
+    <script is:inline type="application/ld+json" set:html={JSON.stringify(structuredData)} />
+    <title>{title}</title>
+    <script is:inline async src="/scripts/posthog.js"></script>
+    <PublicClarity />
+    <script is:inline src="/app-health-log.js" defer></script>
+    <script is:inline defer src="https://health.sassmaker.com/tracker.js" data-key="ahk_pub_6e16be9c9385a6def153b05b1feb391a1205ca00a2c4cd263fb7428dbed4302c" data-project="app-import-de5017d248ba97d2e2e54643dcabc91b3a53f820644e3d8d324d74364847fe58" data-identity="persistent"></script>
+  </head>
+  <body class="about-page changelog-page">
+    <a class="skip-link" href="#main">Skip to main content</a>
+    <header class="about-nav">
+      <a class="brand" href="/" aria-label="Memory Map analysis app">
+        <svg viewBox="0 0 36 36" aria-hidden="true">
+          <path d="M7 8 17 15 29 7M17 15l1 14M7 27l11 2 11-9" />
+          <circle cx="7" cy="8" r="3" />
+          <circle cx="29" cy="7" r="3" />
+          <circle cx="17" cy="15" r="3" />
+          <circle cx="7" cy="27" r="3" />
+          <circle cx="18" cy="29" r="3" />
+          <circle cx="29" cy="20" r="3" />
+        </svg>
+        <span>Memory Map</span>
+      </a>
+      <nav aria-label="Site">
+        <a href="/about/">What it finds</a>
+        <a aria-current="page" href="/changelog/">Changelog</a>
+      </nav>
+      <a class="about-nav-action" href="/">Analyze my ZIP</a>
+    </header>
+
+    <main id="main" class="changelog-main">
+      <header class="changelog-intro">
+        <p class="map-key">Product history</p>
+        <h1>Changelog</h1>
+        <p>
+          Meaningful improvements to private analysis, evidence navigation, and local memory.
+        </p>
+        <nav aria-label="Project links">
+          <a href={`${repository}/issues`}>Roadmap</a>
+          <a href={repository}>Source</a>
+        </nav>
+      </header>
+
+      <ol class="changelog-list">
+        {
+          releases.map((release) => (
+            <li>
+              <article>
+                <time datetime={release.date}>
+                  {new Date(`${release.date}T00:00:00`).toLocaleDateString("en-US", {
+                    year: "numeric",
+                    month: "long",
+                    day: "numeric",
+                  })}
+                </time>
+                <h2>{release.title}</h2>
+                <ul>
+                  {release.outcomes.map((outcome) => <li>{outcome}</li>)}
+                </ul>
+              </article>
+            </li>
+          ))
+        }
+      </ol>
+    </main>
+
+    <StudioFooter summary="Your history stays on your device. Microsoft Clarity measures this public changelog, not the private analysis route." analyze />
+  </body>
+</html>

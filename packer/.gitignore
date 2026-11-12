@@ -1,0 +1,5 @@
+target/
+dist/
+npm/platforms/
+npm/node_modules/
+*.tgz

@@ -1,0 +1,39 @@
+packages:
+  - '.'
+allowBuilds:
+  core-js: true
+  esbuild: true
+  msw: true
+  protobufjs: true
+  sharp: false
+  unrs-resolver: true
+  workerd: true
+# Supply-chain release-age policy: pin rollup to a vetted version even
+# when Astro pulls a fresher one transitively. See fleet AGENTS.md →
+# release-age policy.
+overrides:
+  '@huggingface/transformers@3.8.1>sharp': 0.35.5
+  'miniflare@5.20260820.0-alpha>sharp': 0.35.5
+  # Patch the existing Cockpit OpenNext adapter graph without broad upgrades.
+  'express@5.2.1>proxy-addr': 2.0.8
+  '@types/node-fetch@2.6.13>form-data': 4.0.6
+  'minimatch@8.0.7>brace-expansion': 2.1.6
+  'minimatch@10.2.5>brace-expansion': 5.0.11
+  rollup: 4.60.2
+  esbuild: 0.28.1
+  # Memory Map runs Transformers.js in the browser only; never install the native runtime.
+  '@huggingface/transformers@3.8.1>onnxruntime-node': '-'
+  # Memory Map security pins carried over from chatgpt-memory-insights, scoped to its Astro.
+  'astro@7.3.3>devalue': 5.9.3
+  'astro@7.3.3>http-cache-semantics': 4.3.0
+  'astro@7.3.3>smol-toml': 1.9.0
+  'astro@7.3.3>vite': 8.1.6
+  '@vercel/cli-config>zod': 4.6.7
+
+  # Security repairs for the standalone build and test graph.
+  fast-uri: 3.1.9
+  'miniflare@5.20260820.0-alpha>undici': 7.30.1
+  source-map-js: 1.2.2
+  fast-xml-parser: 5.12.0
+  # The suite uses Node and Playwright; the inherited DOM peer is unused.
+  'vitest@4.1.12>happy-dom': '-'

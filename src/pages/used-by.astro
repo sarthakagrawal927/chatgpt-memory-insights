@@ -1,0 +1,121 @@
+---
+import { publicPages } from "../data/public-identity";
+import { surfaces } from "../data/public-content";
+import "../styles/global.css";
+import "../styles/about.css";
+import PublicClarity from "../components/public-clarity.astro";
+import StudioFooter from "../components/studio-footer.astro";
+
+const { title, description } = publicPages["used-by"];
+const canonical = "https://chatgpt.significanthobbies.com/used-by/";
+
+
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width" />
+    <meta name="description" content={description} />
+    <meta name="ai-summary" content={description} />
+    <link rel="alternate" type="text/markdown" href="https://chatgpt.significanthobbies.com/used-by.md" />
+    <meta name="theme-color" content="#f3f5f2" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="canonical" href={canonical} />
+    <title>{title}</title>
+    <script is:inline defer src="https://health.sassmaker.com/tracker.js" data-key="ahk_pub_6e16be9c9385a6def153b05b1feb391a1205ca00a2c4cd263fb7428dbed4302c" data-project="app-import-de5017d248ba97d2e2e54643dcabc91b3a53f820644e3d8d324d74364847fe58" data-identity="persistent"></script>
+    <style>
+      .usedby-main {
+        max-width: 44rem;
+        margin: 0 auto;
+        padding: 4rem 1.5rem 3rem;
+      }
+      .usedby-main h1 {
+        font-size: 2rem;
+        margin: 0 0 0.5rem;
+      }
+      .usedby-main > p {
+        color: var(--ink-soft, #55605a);
+        margin: 0 0 2.5rem;
+      }
+      .usedby-list {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+        display: grid;
+        gap: 1rem;
+      }
+      .usedby-list li {
+        border: 1px solid var(--line, #d9ded8);
+        border-radius: 10px;
+        padding: 1.1rem 1.25rem;
+        background: #fff;
+      }
+      .usedby-list h2 {
+        font-size: 1.05rem;
+        margin: 0 0 0.35rem;
+        display: flex;
+        align-items: center;
+        gap: 0.6rem;
+      }
+      .usedby-kind {
+        font-size: 0.68rem;
+        font-weight: 600;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: #55605a;
+        border: 1px solid #d9ded8;
+        border-radius: 999px;
+        padding: 0.1rem 0.55rem;
+      }
+      .usedby-list p {
+        margin: 0;
+        color: var(--ink-soft, #55605a);
+        font-size: 0.95rem;
+        line-height: 1.5;
+      }
+      .usedby-list a {
+        color: inherit;
+        text-decoration: none;
+      }
+      .usedby-list a:hover h2 {
+        text-decoration: underline;
+      }
+    </style>
+  </head>
+  <body>
+    <a class="skip-link" href="#main">Skip to main content</a>
+    <main id="main" class="usedby-main">
+      <h1>{title}</h1>
+      <p>Everywhere Memory Map is listed, linked, or watched.</p>
+      <ul class="usedby-list">
+        {
+          surfaces.map((s) => (
+            <li>
+              {s.url ? (
+                <a href={s.url}>
+                  <h2>
+                    {s.name}
+                    <span class="usedby-kind">{s.kind}</span>
+                  </h2>
+                  <p>{s.detail}</p>
+                </a>
+              ) : (
+                <>
+                  <h2>
+                    {s.name}
+                    <span class="usedby-kind">{s.kind}</span>
+                  </h2>
+                  <p>{s.detail}</p>
+                </>
+              )}
+            </li>
+          ))
+        }
+      </ul>
+    </main>
+    <StudioFooter summary="Browser-local analysis for a ChatGPT export. The current web app has no Memory Map account or checkout." analyze />
+    <PublicClarity />
+  </body>
+</html>
