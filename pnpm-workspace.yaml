@@ -16,7 +16,6 @@ overrides:
   'miniflare@5.20260820.0-alpha>sharp': 0.35.5
   # Patch the existing Cockpit OpenNext adapter graph without broad upgrades.
   'express@5.2.1>proxy-addr': 2.0.8
-  'fast-xml-parser@5.7.1>fast-xml-builder': 1.1.7
   '@types/node-fetch@2.6.13>form-data': 4.0.6
   'minimatch@8.0.7>brace-expansion': 2.1.6
   'minimatch@10.2.5>brace-expansion': 5.0.11
