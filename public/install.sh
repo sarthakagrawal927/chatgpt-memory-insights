@@ -89,10 +89,13 @@ asset="$BINARY-$target"
 
 tmp="$(mktemp -d)"
 cleanup() {
+  [ -d "$tmp" ] || return 0
   rm -f "$tmp/releases.json" "$tmp/probe" "$tmp/$BINARY" "$tmp/SHA256SUMS"
   rmdir "$tmp"
 }
-trap cleanup EXIT INT TERM
+trap cleanup EXIT
+trap 'exit 130' INT
+trap 'exit 143' TERM
 
 latest_tag() {
   # latest_tag <repo>: newest published memory-pack release tag, if any.

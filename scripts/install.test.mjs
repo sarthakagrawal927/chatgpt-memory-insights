@@ -34,6 +34,10 @@ const args = process.argv.slice(2);
 const url = args.find((arg) => arg.startsWith("https://"));
 const output = args[args.indexOf("-o") + 1];
 fs.appendFileSync(config.requests, url + "\\n");
+if (config.signal && url === config.signalUrl && !fs.existsSync(config.signalSent)) {
+  fs.writeFileSync(config.signalSent, "sent");
+  process.kill(Number(fs.readFileSync(config.pidfile, "utf8")), config.signal);
+}
 const response = config.responses[url];
 if (!response) process.exit(22);
 fs.writeFileSync(output, Buffer.from(response, "base64"));
@@ -52,6 +56,8 @@ function removeFixture(root) {
     "tools/curl",
     "tools/uname",
     "fixture.json",
+    "installer.pid",
+    "signal-sent",
     "requests.log",
     "installed/memory-pack",
   ]) {
@@ -97,17 +103,30 @@ esac
     configuration,
     JSON.stringify({
       requests,
+      pidfile: join(root, "installer.pid"),
+      signalSent: join(root, "signal-sent"),
+      signal: options.signal,
+      signalUrl: api(primary),
       responses: Object.fromEntries(
         Object.entries(responses).map(([url, body]) => [url, Buffer.from(body).toString("base64")])
       ),
     })
   );
-  const result = spawnSync("/bin/sh", [installer], {
+  const shellArgs = options.signal
+    ? [
+        "-c",
+        'printf "%s\\n" "$$" > "$INSTALLER_PIDFILE"; exec /bin/sh "$1"',
+        "installer-fixture",
+        installer,
+      ]
+    : [installer];
+  const result = spawnSync("/bin/sh", shellArgs, {
     encoding: "utf8",
     env: {
       PATH: `${join(root, "tools")}:/usr/bin:/bin:/usr/sbin:/sbin`,
       TMPDIR: join(root, "temporary"),
       INSTALLER_FIXTURE: configuration,
+      INSTALLER_PIDFILE: join(root, "installer.pid"),
       MEMORY_PACK_BIN_DIR: join(root, "installed"),
       MEMORY_PACK_VERSION: options.version ?? "latest",
     },
@@ -210,3 +229,23 @@ test("successful empty release lists fail without inventing an available version
   assert.ok(!existsSync(fixture.installed));
   assert.deepEqual(fixture.leftovers, []);
 });
+
+for (const [signal, exitCode] of [
+  ["SIGINT", 130],
+  ["SIGTERM", 143],
+]) {
+  test(`${signal} ends the installer before fallback or installation and cleans once`, () => {
+    const fixture = runInstaller(
+      {
+        [api(primary)]: JSON.stringify([{ tag_name: "memory-pack-v0.1.3" }], null, 2),
+      },
+      { signal }
+    );
+    assert.equal(fixture.result.status, exitCode, fixture.result.stderr);
+    assert.deepEqual(fixture.requests, [api(primary)]);
+    assert.ok(!existsSync(fixture.installed));
+    assert.ok(!fixture.result.stdout.includes("using retained"));
+    assert.ok(!fixture.result.stderr.includes("rmdir"));
+    assert.deepEqual(fixture.leftovers, []);
+  });
+}
