@@ -15,6 +15,10 @@ Last updated: 2026-11-12
   Connections at `apps/mcp/local/daddyrad`. The server stays local and read-only.
 - Standalone builds carry the exact dependency pins and a minimal, attributed
   snapshot of the shared agent-surface helpers. No sibling checkout is required.
+- The standalone dependency audit has no advisory exceptions. Targeted
+  transitive security pins repair the inherited build-tool graph. The unused
+  DOM peer and Ultracite CLI are removed; byte-identical Ultracite 7.12.4 Biome
+  presets are retained with their MIT license in `vendor/ultracite`.
 - Manual web deployment verifies clean current main and exact-source CI before
   running quality checks and uploading. CLI release workflows remain tag-driven.
 

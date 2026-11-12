@@ -143,32 +143,16 @@ function checkDuplication() {
 function checkDependencies() {
   const result = run("pnpm", ["audit", "--json"], { allowFailure: true });
   const report = JSON.parse(result.stdout);
-  const accepted = new Set([
-    "GHSA-8xcm-r25x-g524",
-    "GHSA-4cwx-7wf7-3272",
-    "GHSA-7p8r-x3mc-p8w7",
-    "GHSA-m8rv-5g2x-5cg5",
-    "GHSA-jr45-8vmc-qm54",
-    "GHSA-v3r7-h72x-cjcm",
-    "GHSA-5p4m-2wfm-xmqj",
-    "GHSA-2v37-7h3g-55p8",
-    "GHSA-5jgf-p345-68v8",
-    "GHSA-f65p-4m7j-42xc",
-    "GHSA-fph4-wmhf-6fwf",
-    "GHSA-jqff-g426-hqxp",
-  ]);
   const advisories = Object.values(report.advisories ?? {});
-  const unexpected = advisories.filter((advisory) => !accepted.has(advisory.github_advisory_id));
   const count = (severity) =>
     advisories.filter((advisory) => advisory.severity === severity).length;
   console.log(
     `Dependencies: ${count("critical")} critical, ${count("high")} high, ` +
-      `${count("moderate")} moderate, ${unexpected.length} unexpected; ` +
-      `${advisories.length - unexpected.length} accepted build-tool advisories.`
+      `${count("moderate")} moderate, ${count("low")} low.`
   );
-  if (unexpected.length > 0) {
+  if (result.status !== 0 || advisories.length > 0) {
     throw new Error(
-      `Unexpected advisories: ${unexpected
+      `Dependency audit failed: ${advisories
         .map((advisory) => advisory.github_advisory_id)
         .join(", ")}`
     );

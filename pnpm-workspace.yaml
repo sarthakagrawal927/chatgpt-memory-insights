@@ -30,3 +30,11 @@ overrides:
   'astro@7.3.3>smol-toml': 1.9.0
   'astro@7.3.3>vite': 8.1.6
   '@vercel/cli-config>zod': 4.6.7
+
+  # Security repairs for the standalone build and test graph.
+  fast-uri: 3.1.9
+  'miniflare@5.20260820.0-alpha>undici': 7.30.1
+  source-map-js: 1.2.2
+  fast-xml-parser: 5.12.0
+  # The suite uses Node and Playwright; the inherited DOM peer is unused.
+  'vitest@4.1.12>happy-dom': '-'

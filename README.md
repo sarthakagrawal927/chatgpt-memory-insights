@@ -116,7 +116,7 @@ checks, and the production build. Existing debt is regression-gated by the
 checked-in quality scripts; historical context is in
 [#213](https://github.com/sass-maker/saas-maker/issues/213) (moved from
 chatgpt-memory-insights#12).
-Dependency advisories are audited for this standalone package with
+Dependency advisories are audited without an exception list for this standalone package with
 `pnpm run quality:dependencies`.
 
 `pnpm run test:import` additionally tests the built

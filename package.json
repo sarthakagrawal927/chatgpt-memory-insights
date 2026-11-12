@@ -10,7 +10,7 @@
     "dev": "astro dev",
     "build": "astro build && node scripts/check-ai-readable.mjs",
     "format:check": "node scripts/check-code-health.mjs format",
-    "lint": "ultracite check .",
+    "lint": "biome check --no-errors-on-unmatched .",
     "preview": "astro preview",
     "typecheck": "astro check",
     "test": "vitest run",
@@ -48,7 +48,6 @@
     "lightningcss": "1.30.2",
     "tailwindcss": "4.3.3",
     "typescript": "5.9.3",
-    "ultracite": "7.12.4",
     "vite": "8.1.6",
     "vitest": "4.1.12",
     "wrangler": "4.125.0"
