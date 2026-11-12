@@ -120,10 +120,10 @@ if [ "$VERSION" = "latest" ]; then
     fi
     if [ -n "$VERSION" ]; then
       base="https://github.com/$LEGACY_REPO/releases/download/$VERSION"
-    elif [ "$primary_lookup_failed" = true ] && [ "$legacy_lookup_failed" = true ]; then
+    elif [ "$primary_lookup_failed" = true ] || [ "$legacy_lookup_failed" = true ]; then
       VERSION="memory-pack-v0.1.2"
       base="https://github.com/$REPO/releases/download/$VERSION"
-      say "warning: both release API lookups failed; using retained $VERSION"
+      say "warning: release API lookup failed; using retained $VERSION"
     else
       die "no memory-pack release is available"
     fi

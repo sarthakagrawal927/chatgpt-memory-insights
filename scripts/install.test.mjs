@@ -160,7 +160,22 @@ test("API failures fall back to the retained primary tag with a warning and chec
   assert.equal(fixture.result.status, 0, fixture.result.stderr);
   assert.deepEqual(fixture.requests.slice(0, 2), [api(primary), api(legacy)]);
   assert.deepEqual(readFileSync(fixture.installed), binary);
-  assert.match(fixture.result.stdout, /warning: both release API lookups failed/u);
+  assert.match(fixture.result.stdout, /warning: release API lookup failed/u);
+  assert.match(fixture.result.stdout, /using retained memory-pack-v0.1.2/u);
+  assert.match(fixture.result.stdout, /checksum verified/u);
+  assert.ok(fixture.requests.every((url) => !url.includes("/latest")));
+  assert.deepEqual(fixture.leftovers, []);
+});
+
+test("a primary API failure still uses the retained tag when legacy has no releases", () => {
+  const fixture = runInstaller({
+    [api(legacy)]: "[]",
+    ...release(primary, "memory-pack-v0.1.2"),
+  });
+  assert.equal(fixture.result.status, 0, fixture.result.stderr);
+  assert.deepEqual(fixture.requests.slice(0, 2), [api(primary), api(legacy)]);
+  assert.deepEqual(readFileSync(fixture.installed), binary);
+  assert.match(fixture.result.stdout, /warning: release API lookup failed/u);
   assert.match(fixture.result.stdout, /using retained memory-pack-v0.1.2/u);
   assert.match(fixture.result.stdout, /checksum verified/u);
   assert.ok(fixture.requests.every((url) => !url.includes("/latest")));
