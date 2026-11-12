@@ -33,7 +33,13 @@ tag-triggered binaries. Do not publish a tag merely to test a migration.
 
 ## Deployment and work tracking
 
-Deploy manually with `pnpm deploy` from clean current `main` after exact-source
+Before the first standalone deployment, the GitHub repository must be renamed
+from `sarthakagrawal927/daddyrad-mcp` to
+`sarthakagrawal927/chatgpt-memory-insights`. Update this checkout with
+`git remote set-url origin https://github.com/sarthakagrawal927/chatgpt-memory-insights.git`.
+The origin allowlist intentionally rejects the former repository name.
+
+Deploy manually with `pnpm run deploy` from clean current `main` after exact-source
 push CI succeeds. `node scripts/deploy.mjs --dry-run` checks readiness without
 uploading. Existing production configuration and rollback remain unchanged.
 Track work in this repository's GitHub Issues. Use `PROJECT_STATUS.md` only for

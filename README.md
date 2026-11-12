@@ -140,6 +140,18 @@ between origins automatically.
 
 ## Deploy
 
+Before the first standalone deployment, complete the GitHub repository rename
+from `sarthakagrawal927/daddyrad-mcp` to
+`sarthakagrawal927/chatgpt-memory-insights`, then update this checkout's origin:
+
+```bash
+git remote set-url origin https://github.com/sarthakagrawal927/chatgpt-memory-insights.git
+```
+
+The deployment guard requires that canonical origin and rejects the former
+repository name. Renaming the repository and changing origin are cutover
+prerequisites; preparing this source does not perform them.
+
 Production is the existing `chatgpt-memory-insights` Cloudflare Pages project
 on `chatgpt.significanthobbies.com`. Keep both: the hostname is the origin that
 owns visitors' saved IndexedDB indexes. Deploy manually from clean, synced
@@ -147,7 +159,7 @@ owns visitors' saved IndexedDB indexes. Deploy manually from clean, synced
 
 ```bash
 node scripts/deploy.mjs --dry-run  # verify readiness without publishing
-pnpm deploy
+pnpm run deploy
 ```
 
 That verifies a clean checkout on `main`, the exact current remote revision

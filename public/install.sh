@@ -88,24 +88,45 @@ target="$(detect_target)"
 asset="$BINARY-$target"
 
 tmp="$(mktemp -d)"
-trap 'rm -rf "$tmp"' EXIT INT TERM
+cleanup() {
+  rm -f "$tmp/releases.json" "$tmp/probe" "$tmp/$BINARY" "$tmp/SHA256SUMS"
+  rmdir "$tmp"
+}
+trap cleanup EXIT INT TERM
 
 latest_tag() {
   # latest_tag <repo>: newest published memory-pack release tag, if any.
   # SaaS Maker hosts other releases too, so /releases/latest is not usable.
   fetch "https://api.github.com/repos/$1/releases?per_page=100" "$tmp/releases.json" 2>/dev/null ||
-    return 0
+    return 1
   sed -n "s/.*\"tag_name\": *\"\($TAG_PREFIX[^\"]*\)\".*/\1/p" "$tmp/releases.json" | head -n 1
 }
 
 if [ "$VERSION" = "latest" ]; then
-  VERSION="$(latest_tag "$REPO")"
+  primary_lookup_failed=false
+  legacy_lookup_failed=false
+  if VERSION="$(latest_tag "$REPO")"; then
+    :
+  else
+    primary_lookup_failed=true
+  fi
   if [ -n "$VERSION" ]; then
     base="https://github.com/$REPO/releases/download/$VERSION"
   else
-    VERSION="$(latest_tag "$LEGACY_REPO")"
-    [ -n "$VERSION" ] || die "no memory-pack release is available"
-    base="https://github.com/$LEGACY_REPO/releases/download/$VERSION"
+    if VERSION="$(latest_tag "$LEGACY_REPO")"; then
+      :
+    else
+      legacy_lookup_failed=true
+    fi
+    if [ -n "$VERSION" ]; then
+      base="https://github.com/$LEGACY_REPO/releases/download/$VERSION"
+    elif [ "$primary_lookup_failed" = true ] && [ "$legacy_lookup_failed" = true ]; then
+      VERSION="memory-pack-v0.1.2"
+      base="https://github.com/$REPO/releases/download/$VERSION"
+      say "warning: both release API lookups failed; using retained $VERSION"
+    else
+      die "no memory-pack release is available"
+    fi
   fi
 else
   base="https://github.com/$REPO/releases/download/$VERSION"
