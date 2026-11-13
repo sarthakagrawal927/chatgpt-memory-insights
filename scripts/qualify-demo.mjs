@@ -64,7 +64,13 @@ async function serveApp() {
       const body = await readFile(new URL(`../dist/${path}`, import.meta.url));
       response.setHeader(
         "Content-Type",
-        path.endsWith(".js") ? "text/javascript" : path.endsWith(".css") ? "text/css" : "text/html"
+        path.endsWith(".woff2")
+          ? "font/woff2"
+          : path.endsWith(".js")
+            ? "text/javascript"
+            : path.endsWith(".css")
+              ? "text/css"
+              : "text/html"
       );
       response.end(body);
     } catch {
@@ -90,6 +96,44 @@ async function withBrowser(width, run, timezoneId = "UTC") {
     });
     await page.goto(app.origin);
     await expect(page.locator("#load-demo")).toBeVisible();
+    await expect(page.locator("#load-demo")).toHaveAttribute("data-slot", "native-button");
+    await expect(page.locator("#load-demo")).toHaveAttribute("data-variant", "brand");
+    const fontsLoaded = await page.evaluate(async () => {
+      await document.fonts.ready;
+      return ["Geist Variable", "Figtree Variable"].every((family) =>
+        [...document.fonts].some((face) => face.family.includes(family) && face.status === "loaded")
+      );
+    });
+    if (!fontsLoaded) throw new Error("Shared UI font assets did not load");
+    const inputClipped = await page
+      .locator("#archive-input")
+      .evaluate((element) => getComputedStyle(element).clipPath === "inset(50%)");
+    const fileBounds = await page.locator("#archive-input").boundingBox();
+    if (!inputClipped || !fileBounds || fileBounds.width > 2 || fileBounds.height > 2) {
+      throw new Error("Hidden file input overlaps nearby controls");
+    }
+    for (const dark of [false, true]) {
+      await page.evaluate(
+        (enabled) => document.documentElement.classList.toggle("dark", enabled),
+        dark
+      );
+      const selection = await page
+        .locator('[data-confidence="65"]')
+        .first()
+        .evaluate((element) => {
+          const style = getComputedStyle(element);
+          const sibling = getComputedStyle(element.previousElementSibling);
+          return {
+            background: style.backgroundColor,
+            color: style.color,
+            other: sibling.backgroundColor,
+          };
+        });
+      if (selection.background === selection.other || selection.color === selection.background) {
+        throw new Error("Selected controls must have a distinct background and visible labels");
+      }
+    }
+    await page.evaluate(() => document.documentElement.classList.remove("dark"));
     if (app.state.requests !== 0) throw new Error("Landing preloaded the demo");
     await run(page, app);
     if (errors.length) throw new Error(`Browser runtime errors: ${errors.join("; ")}`);
@@ -110,6 +154,20 @@ for (const width of [390, 768, 1440]) {
       await expect(page.locator("#demo-progress-bar")).toHaveAttribute("value", /\d/);
       await expect(page.locator("#report-view")).toBeVisible();
       await expect(page.locator("#demo-notice")).toContainText("aggregate");
+      const designSystem = await page.locator("#reset-report").evaluate((button) => ({
+        radius: parseFloat(getComputedStyle(button).borderRadius),
+        font: getComputedStyle(document.body).fontFamily,
+        charts: document.querySelectorAll('[data-slot="chart-panel"]').length,
+        rows: document.querySelectorAll('#topic-list [data-slot="native-button"]').length,
+      }));
+      assert.ok(designSystem.radius > 0, "actions must use the shared rounded control geometry");
+      assert.match(designSystem.font, /Geist/);
+      assert.equal(designSystem.charts, 7);
+      const labelsFit = await page
+        .locator(".matrix-row-label")
+        .evaluateAll((rows) => rows.every((row) => row.scrollWidth <= row.clientWidth + 1));
+      assert.equal(labelsFit, true, "language-chart labels must fit their controls");
+      assert.ok(designSystem.rows > 0, "dynamic topic controls must use the shared DOM adapter");
       const highlightFits = await page.locator(".atlas-highlight").evaluate((element) => {
         const card = element.getBoundingClientRect();
         return [...element.children].every((child) => {

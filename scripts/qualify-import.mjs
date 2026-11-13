@@ -43,13 +43,15 @@ async function serveBuiltApp() {
       const content = await readFile(new URL(`../dist/${path}`, import.meta.url));
       response.setHeader(
         "content-type",
-        path.endsWith(".js")
-          ? "text/javascript"
-          : path.endsWith(".css")
-            ? "text/css"
-            : path.endsWith(".json")
-              ? "application/json"
-              : "text/html"
+        path.endsWith(".woff2")
+          ? "font/woff2"
+          : path.endsWith(".js")
+            ? "text/javascript"
+            : path.endsWith(".css")
+              ? "text/css"
+              : path.endsWith(".json")
+                ? "application/json"
+                : "text/html"
       );
       response.end(content);
     } catch {

@@ -3,7 +3,9 @@
 Last updated: 2026-11-13
 
 - Report presentation, graphs, loading states and styles are owned by UI
-  Library's `@saas-maker/insight-atlas` package. This app supplies local analysis,
+  Library's `@saas-maker/insight-atlas` package, composed from `@saas-maker/ui`
+  native controls, Cards, chart frames and the shared theme and fonts. This app
+  supplies local analysis,
   model workers, storage and product copy through its typed services.
 - The opt-in demo uses an owner-approved aggregate projection of a real export.
   Its bundled JSON contains numeric activity and fixed question-category IDs;
