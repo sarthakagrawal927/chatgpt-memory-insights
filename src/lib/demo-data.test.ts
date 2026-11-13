@@ -48,13 +48,25 @@ function fixture() {
 }
 
 describe("privacy-safe demo data", () => {
+  it("publishes only day precision for the archive date range", () => {
+    const data = createDemoData(fixture());
+    expect(data.dateRange.start % 86400).toBe(0);
+    expect(data.dateRange.end % 86400).toBe(0);
+    const value = JSON.parse(JSON.stringify(data));
+    value.dateRange.start += 0.25;
+    expect(() => parseDemoData(value)).toThrow();
+  });
+
   it("retains the real activity aggregates and strips every arbitrary text field", () => {
     const conversations = fixture();
     const expected = buildDeterministicReport(conversations).report;
     const data = createDemoData(conversations, 1_800_000_000_000);
     const serialized = JSON.stringify(data);
     expect(data.totals).toEqual(expected.totals);
-    expect(data.dateRange).toEqual(expected.dateRange);
+    expect(data.dateRange).toEqual({
+      start: Math.floor(expected.dateRange.start / 86400) * 86400,
+      end: Math.floor(expected.dateRange.end / 86400) * 86400,
+    });
     expect(data.depth).toEqual(expected.depth);
     expect(serialized).not.toMatch(
       /Alice|Bob|private|customer|portfolio|protein|interview|Python|Model|https|title|conversationId|sources|"prompts"/i

@@ -110,6 +110,14 @@ for (const width of [390, 768, 1440]) {
       await expect(page.locator("#demo-progress-bar")).toHaveAttribute("value", /\d/);
       await expect(page.locator("#report-view")).toBeVisible();
       await expect(page.locator("#demo-notice")).toContainText("aggregate");
+      const highlightFits = await page.locator(".atlas-highlight").evaluate((element) => {
+        const card = element.getBoundingClientRect();
+        return [...element.children].every((child) => {
+          const bounds = child.getBoundingClientRect();
+          return bounds.left >= card.left - 1 && bounds.right <= card.right + 1;
+        });
+      });
+      assert.equal(highlightFits, true, "aggregate highlight content must stay inside its card");
       await expect(page.locator("#overview-stats")).toContainText(/Conversations\s*24/);
       await expect(page.locator("#topic-graph")).toBeVisible();
       assert.ok((await page.locator("#topic-graph circle").count()) > 0);

@@ -79,7 +79,10 @@ export function createDemoData(
     privacy: "aggregate-only",
     generatedAt,
     totals: { ...report.totals },
-    dateRange: { ...report.dateRange },
+    dateRange: {
+      start: Math.floor(report.dateRange.start / 86400) * 86400,
+      end: Math.floor(report.dateRange.end / 86400) * 86400,
+    },
     days: (report.activityByDay ?? []).map(({ label, value }) => [
       Date.parse(label) / 86_400_000,
       value,
@@ -147,7 +150,13 @@ function count(value: unknown): number {
 }
 
 function timestamp(value: unknown): number {
-  if (typeof value !== "number" || !Number.isFinite(value) || value < 0 || value > 10_000_000_000)
+  if (
+    typeof value !== "number" ||
+    !Number.isSafeInteger(value) ||
+    value < 0 ||
+    value > 10_000_000_000 ||
+    value % 86400 !== 0
+  )
     throw new Error("Invalid demo timestamp");
   return value;
 }

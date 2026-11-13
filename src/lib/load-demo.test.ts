@@ -4,7 +4,10 @@ import { createDemoData, parseDemoData } from "./demo-data";
 import { loadDemo } from "./load-demo";
 import type { ConversationRecord } from "./types";
 
-afterEach(() => vi.unstubAllGlobals());
+afterEach(() => {
+  vi.unstubAllGlobals();
+  vi.useRealTimers();
+});
 
 const date = Date.UTC(2026, 0, 1) / 1000;
 const fixture: ConversationRecord = {
@@ -29,6 +32,32 @@ const fixture: ConversationRecord = {
 };
 
 describe("on-demand demo download", () => {
+  it("works without AbortSignal.any or AbortSignal.timeout", async () => {
+    vi.stubGlobal("AbortSignal", {});
+    vi.stubGlobal("fetch", vi.fn().mockResolvedValue(Response.json(createDemoData([fixture]))));
+    const report = await loadDemo({ signal: new AbortController().signal, onProgress: vi.fn() });
+    expect(report.demo?.privacy).toBe("aggregate-only");
+  });
+
+  it("aborts a stalled request and gives a friendly retry message", async () => {
+    vi.useFakeTimers();
+    vi.stubGlobal(
+      "fetch",
+      vi.fn(
+        (_url, { signal }) =>
+          new Promise((_resolve, reject) => {
+            signal.addEventListener("abort", () => reject(signal.reason), { once: true });
+          })
+      )
+    );
+    const result = loadDemo({ signal: new AbortController().signal, onProgress: vi.fn() });
+    const assertion = expect(result).rejects.toThrow(
+      "The demo took too long to download. Please try again."
+    );
+    await vi.advanceTimersByTimeAsync(30000);
+    await assertion;
+  });
+
   it("ships only the validated aggregate artifact", () => {
     const bytes = readFileSync(new URL("../../public/demo/report-v1.json", import.meta.url));
     const data = parseDemoData(JSON.parse(bytes.toString()));
