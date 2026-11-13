@@ -35,7 +35,7 @@
   },
   "dependencies": {
     "@huggingface/transformers": "3.8.1",
-    "@saas-maker/insight-atlas": "github:sass-maker/ui-library#0ab6a2a225c8a23ea63a8ab7f93f2536b1a0c55e&path:/packages/insight-atlas",
+    "@saas-maker/insight-atlas": "github:sass-maker/ui-library#70a87f58403bc4d1f4eaf71ca42ccd673e651492&path:/packages/insight-atlas",
     "@zip.js/zip.js": "2.8.34",
     "astro": "7.4.2"
   },

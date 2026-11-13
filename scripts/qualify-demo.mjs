@@ -75,11 +75,11 @@ async function serveApp() {
   return { server, state, origin: `http://127.0.0.1:${server.address().port}` };
 }
 
-async function withBrowser(width, run) {
+async function withBrowser(width, run, timezoneId = "UTC") {
   const app = await serveApp();
   const browser = await chromium.launch();
   try {
-    const page = await browser.newPage({ viewport: { width, height: 1000 } });
+    const page = await browser.newPage({ viewport: { width, height: 1000 }, timezoneId });
     const errors = [];
     const remote = [];
     page.on("pageerror", (error) => errors.push(error.message));
@@ -205,4 +205,16 @@ test("unexpected demo fields fail closed", async () => {
     await expect(page.locator("#report-view")).toBeHidden();
     await expect(page.locator("body")).not.toContainText("PRIVATE_SYNTHETIC_TITLE");
   });
+});
+
+test("aggregate date ranges match UTC calendar days west of UTC", async () => {
+  await withBrowser(
+    390,
+    async (page) => {
+      await page.locator("#load-demo").click();
+      await expect(page.locator("#report-meta")).toContainText("Jan 1, 2025");
+      await expect(page.locator("#report-meta")).toContainText("Dec 24, 2025");
+    },
+    "America/Los_Angeles"
+  );
 });
