@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { activityMonthWindow } from "./period";
+import { activityMonthWindow } from "@saas-maker/insight-atlas/period";
 import type { DeterministicReport } from "./types";
 
 function source(

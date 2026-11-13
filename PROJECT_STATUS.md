@@ -1,6 +1,18 @@
 # Memory Map / ChatGPT Insights
 
-Last updated: 2026-11-12
+Last updated: 2026-11-13
+
+- Report presentation, graphs, loading states and styles are owned by UI
+  Library's `@saas-maker/insight-atlas` package. This app supplies local analysis,
+  model workers, storage and product copy through its typed services.
+- The opt-in demo uses an owner-approved aggregate projection of a real export.
+  Its bundled JSON contains numeric activity and fixed question-category IDs;
+  conversation text, titles, IDs, source links and extracted facts are omitted.
+  The graph represents category co-occurrence, not semantic embeddings. The
+  same artifact is retained in R2 under the product's demo asset prefix.
+- Rebuild an aggregate fixture with `pnpm demo:build <archive.zip> <output.json>`;
+  `pnpm test:demo` qualifies on-demand loading, cancellation, retry and responsive
+  rendering. Source changes do not themselves claim a production deployment.
 
 - Application and `memory-pack` source restored as an independent product from
   `sass-maker/saas-maker` at `b54780b8496fb081cec29ec352fea92e0ff7c74f`.

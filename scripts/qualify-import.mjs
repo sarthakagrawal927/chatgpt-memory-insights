@@ -43,7 +43,13 @@ async function serveBuiltApp() {
       const content = await readFile(new URL(`../dist/${path}`, import.meta.url));
       response.setHeader(
         "content-type",
-        path.endsWith(".js") ? "text/javascript" : path.endsWith(".css") ? "text/css" : "text/html"
+        path.endsWith(".js")
+          ? "text/javascript"
+          : path.endsWith(".css")
+            ? "text/css"
+            : path.endsWith(".json")
+              ? "application/json"
+              : "text/html"
       );
       response.end(content);
     } catch {
@@ -281,6 +287,33 @@ async function retainFixtureEvidence(exported, state, coverageVectors, screensho
   );
 }
 
+async function verifySavedMemoryFlow(page) {
+  await expect(page.locator("#forget-memory")).toBeHidden();
+  await page.locator("#save-memory").click();
+  await expect(page.locator("#save-memory")).toHaveText("Saved on this device");
+  await expect(page.locator("#forget-memory")).toBeVisible();
+  await page.reload();
+  await expect(page.locator("#report-view")).toBeVisible();
+  await expect(page.locator("#save-memory")).toHaveText("Saved on this device");
+  await expect(page.locator("#save-memory")).toBeDisabled();
+  await page.locator("#reset-report").click();
+  await page.locator("#load-demo").click();
+  await expect(page.locator("#demo-notice")).toBeVisible();
+  await expect(page.locator("#forget-memory")).toBeHidden();
+  await page.reload();
+  await expect(page.locator("#report-view")).toBeVisible();
+  await expect(page.locator("#demo-notice")).toBeHidden();
+  await expect(page.locator("#report-meta")).toContainText("synthetic.zip");
+  await expect(page.locator("#save-memory")).toHaveText("Saved on this device");
+  page.once("dialog", (dialog) => dialog.accept());
+  await page.locator("#forget-memory").click();
+  await expect(page.locator("#forget-memory")).toBeHidden();
+  await page.locator("#atlas-period").selectOption("all");
+  await expect(page.locator("#forget-memory")).toBeHidden();
+  await expect(page.locator("#save-memory")).toBeEnabled();
+  await expect(page.locator("#save-memory")).toHaveText("Keep on this device");
+}
+
 test("synthetic ZIP completes pinned compact browser WASM inference", {
   timeout: 300000,
 }, async () => {
@@ -343,6 +376,7 @@ test("synthetic ZIP completes pinned compact browser WASM inference", {
     assert.ok(Number.isFinite(recoveryDurationMs) && recoveryDurationMs >= 0);
     if (process.env.CI) assert.equal(screenshots.length, 9);
     await retainFixtureEvidence(exported, modelRequests, coverageVectors, screenshots);
+    await verifySavedMemoryFlow(page);
     assert.deepEqual(pageErrors, []);
   } finally {
     try {

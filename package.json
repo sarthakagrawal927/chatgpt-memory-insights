@@ -29,11 +29,13 @@
     "check": "pnpm run quality && pnpm run test:deployment && pnpm run test:installer",
     "deploy": "node scripts/deploy.mjs",
     "test:deployment": "node --test scripts/deploy.test.mjs",
-    "test:installer": "node --test scripts/install.test.mjs"
+    "test:installer": "node --test scripts/install.test.mjs",
+    "demo:build": "node scripts/build-demo.mjs",
+    "test:demo": "node scripts/qualify-demo.mjs"
   },
   "dependencies": {
     "@huggingface/transformers": "3.8.1",
-    "@observablehq/plot": "0.6.17",
+    "@saas-maker/insight-atlas": "github:sass-maker/ui-library#5def26ce8cedff347d0bdf781d3854eb87badcec&path:/packages/insight-atlas",
     "@zip.js/zip.js": "2.8.34",
     "astro": "7.4.2"
   },

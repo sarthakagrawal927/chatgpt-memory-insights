@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { formatNumber, truncate } from "./dom-utils";
+import { formatNumber, truncate } from "@saas-maker/insight-atlas/dom-utils";
 
 describe("formatNumber", () => {
   it("formats integers with locale thousands separators", () => {
