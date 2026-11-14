@@ -216,10 +216,31 @@ for (const width of [390, 768, 1440]) {
       assert.equal(app.state.requests, 1);
       await page.locator("#atlas-period").selectOption("all");
       await expect(page.locator("#demo-notice")).toBeVisible();
+      const overflow = await page.evaluate(() => ({
+        width: window.innerWidth,
+        scrollWidth: document.documentElement.scrollWidth,
+        elements: [...document.querySelectorAll("body *")]
+          .flatMap((element) => {
+            const bounds = element.getBoundingClientRect();
+            if (bounds.right <= window.innerWidth + 1 || bounds.width === 0) return [];
+            const style = getComputedStyle(element);
+            return [
+              {
+                tag: element.tagName,
+                id: element.id,
+                class: element.getAttribute("class"),
+                right: bounds.right,
+                width: bounds.width,
+                transform: style.transform,
+              },
+            ];
+          })
+          .slice(0, 20),
+      }));
       assert.equal(
-        await page.evaluate(() => document.documentElement.scrollWidth > window.innerWidth),
+        overflow.scrollWidth > overflow.width,
         false,
-        "viewport must not overflow"
+        `viewport must not overflow: ${JSON.stringify(overflow)}`
       );
       const artifactDir = process.env.MEMORY_MAP_DEMO_ARTIFACT_DIR;
       if (artifactDir) {
