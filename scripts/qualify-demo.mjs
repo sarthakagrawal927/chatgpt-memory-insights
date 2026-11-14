@@ -146,6 +146,30 @@ async function withBrowser(width, run, timezoneId = "UTC") {
   }
 }
 
+async function viewportOverflow(page) {
+  return page.evaluate(() => ({
+    width: window.innerWidth,
+    scrollWidth: document.documentElement.scrollWidth,
+    elements: [...document.querySelectorAll("body *")]
+      .flatMap((element) => {
+        const bounds = element.getBoundingClientRect();
+        if (bounds.right <= window.innerWidth + 1 || bounds.width === 0) return [];
+        const style = getComputedStyle(element);
+        return [
+          {
+            tag: element.tagName,
+            id: element.id,
+            class: element.getAttribute("class"),
+            right: bounds.right,
+            width: bounds.width,
+            transform: style.transform,
+          },
+        ];
+      })
+      .slice(0, 20),
+  }));
+}
+
 for (const width of [390, 768, 1440]) {
   test(`demo loads explicitly with truthful graphs and private controls omitted at ${width}px`, async () => {
     await withBrowser(width, async (page, app) => {
@@ -216,27 +240,7 @@ for (const width of [390, 768, 1440]) {
       assert.equal(app.state.requests, 1);
       await page.locator("#atlas-period").selectOption("all");
       await expect(page.locator("#demo-notice")).toBeVisible();
-      const overflow = await page.evaluate(() => ({
-        width: window.innerWidth,
-        scrollWidth: document.documentElement.scrollWidth,
-        elements: [...document.querySelectorAll("body *")]
-          .flatMap((element) => {
-            const bounds = element.getBoundingClientRect();
-            if (bounds.right <= window.innerWidth + 1 || bounds.width === 0) return [];
-            const style = getComputedStyle(element);
-            return [
-              {
-                tag: element.tagName,
-                id: element.id,
-                class: element.getAttribute("class"),
-                right: bounds.right,
-                width: bounds.width,
-                transform: style.transform,
-              },
-            ];
-          })
-          .slice(0, 20),
-      }));
+      const overflow = await viewportOverflow(page);
       assert.equal(
         overflow.scrollWidth > overflow.width,
         false,
