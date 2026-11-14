@@ -289,6 +289,82 @@ async function retainFixtureEvidence(exported, state, coverageVectors, screensho
   );
 }
 
+async function verifyStoryAndLedger(page) {
+  await page.locator("#search-query").fill("basil garden");
+  await page.locator("#search-query").press("Enter");
+  await expect(page.locator("#search-results")).toContainText("Synthetic garden");
+  await page
+    .locator("#search-results button")
+    .filter({ hasText: "Synthetic garden" })
+    .first()
+    .click();
+  await expect(page.locator("#evidence-panel")).toBeVisible();
+  await expect(page.locator("#evidence-content")).toContainText("Synthetic garden");
+  await page.keyboard.press("Escape");
+  const launcher = page.locator("#open-story");
+  await launcher.click();
+  await expect(page.locator("#story-dialog")).toBeVisible();
+  await expect(page.locator("#story-position")).toHaveText("Slide 1 of 7");
+  await page.keyboard.press("ArrowRight");
+  await expect(page.locator("#story-position")).toHaveText("Slide 2 of 7");
+  await page.keyboard.press("ArrowLeft");
+  await expect(page.locator("#story-position")).toHaveText("Slide 1 of 7");
+  let checkedEvidence = false;
+  for (let index = 2; index <= 7; index += 1) {
+    await page.locator("#story-next").click();
+    await expect(page.locator("#story-position")).toHaveText(`Slide ${index} of 7`);
+    await expect(page.locator("#story-heading")).not.toBeEmpty();
+    const evidence = page.locator(".story-evidence");
+    if (!checkedEvidence && (await evidence.count())) {
+      await evidence.click();
+      await expect(page.locator("#evidence-panel")).toBeVisible();
+      await expect(page.locator("#evidence-content")).not.toBeEmpty();
+      await page.locator("#close-evidence").click();
+      await expect(page.locator("#story-dialog")).toBeVisible();
+      await evidence.click();
+      await expect(page.locator("#evidence-panel")).toBeVisible();
+      await page.keyboard.press("Escape");
+      await expect(page.locator("#story-dialog")).toBeVisible();
+      await expect(page.locator("#story-position")).toHaveText(`Slide ${index} of 7`);
+      checkedEvidence = true;
+    }
+  }
+  if (!checkedEvidence) throw new Error("The private story must exercise an evidence detour");
+  await page.locator("#story-next").click();
+  await expect(page.locator("#story-dialog")).toBeHidden();
+  await expect(launcher).toBeFocused();
+  await launcher.click();
+  await page.keyboard.press("Escape");
+  await expect(page.locator("#story-dialog")).toBeHidden();
+  await expect(launcher).toBeFocused();
+  await launcher.click();
+  const retainedFocus = await page.evaluate(() => {
+    const dialog = document.querySelector("#story-dialog");
+    const tab = document.querySelector("#ledger-tabs [role=tab]");
+    const closed = new Promise((resolve) => {
+      dialog.addEventListener(
+        "close",
+        () => {
+          resolve(document.activeElement === tab);
+        },
+        { once: true }
+      );
+    });
+    dialog.close();
+    tab.focus();
+    return closed;
+  });
+  if (!retainedFocus) throw new Error("A queued story close must preserve the user's new focus");
+  const tabs = page.locator("#ledger-tabs [role=tab]");
+  await tabs.first().focus();
+  await page.keyboard.press("End");
+  await expect(tabs.last()).toBeFocused();
+  await expect(tabs.last()).toHaveAttribute("aria-selected", "true");
+  await page.keyboard.press("Home");
+  await expect(tabs.first()).toBeFocused();
+  await expect(tabs.first()).toHaveAttribute("aria-selected", "true");
+}
+
 async function verifySavedMemoryFlow(page) {
   await expect(page.locator("#forget-memory")).toBeHidden();
   await page.locator("#save-memory").click();
@@ -378,6 +454,7 @@ test("synthetic ZIP completes pinned compact browser WASM inference", {
     assert.ok(Number.isFinite(recoveryDurationMs) && recoveryDurationMs >= 0);
     if (process.env.CI) assert.equal(screenshots.length, 9);
     await retainFixtureEvidence(exported, modelRequests, coverageVectors, screenshots);
+    await verifyStoryAndLedger(page);
     await verifySavedMemoryFlow(page);
     assert.deepEqual(pageErrors, []);
   } finally {

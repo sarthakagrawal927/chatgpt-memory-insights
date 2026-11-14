@@ -59,7 +59,8 @@ async function serveApp() {
       return;
     }
     try {
-      const path = request.url === "/" ? "index.html" : request.url.slice(1).split("?")[0];
+      const pathname = request.url.split("?")[0];
+      const path = pathname.endsWith("/") ? `${pathname.slice(1)}index.html` : pathname.slice(1);
       if (path.includes("..")) return response.writeHead(400).end();
       const body = await readFile(new URL(`../dist/${path}`, import.meta.url));
       response.setHeader(
@@ -287,6 +288,144 @@ test("unexpected demo fields fail closed", async () => {
     await expect(page.locator("#error-view")).toBeVisible();
     await expect(page.locator("#report-view")).toBeHidden();
     await expect(page.locator("body")).not.toContainText("PRIVATE_SYNTHETIC_TITLE");
+  });
+});
+
+test("report tabs support keyboard navigation and evidence restores focus", async () => {
+  await withBrowser(390, async (page) => {
+    await page.locator("#load-demo").click();
+    await expect(page.locator("#report-view")).toBeVisible();
+    const tabs = page.locator("[data-evolution]");
+    await tabs.nth(0).focus();
+    await page.keyboard.press("ArrowRight");
+    await expect(tabs.nth(1)).toBeFocused();
+    await expect(tabs.nth(1)).toHaveAttribute("aria-selected", "true");
+    await page.keyboard.press("End");
+    await expect(tabs.nth(2)).toBeFocused();
+    await page.keyboard.press("ArrowRight");
+    await expect(tabs.nth(0)).toBeFocused();
+    await page.keyboard.press("Home");
+    assert.equal(
+      await tabs.evaluateAll((nodes) => nodes.filter((node) => node.tabIndex === 0).length),
+      1
+    );
+    const topic = page.locator("#topic-graph .graph-node").first();
+    await topic.focus();
+    await page.keyboard.press("Enter");
+    await expect(page.locator("#close-evidence")).toBeFocused();
+    await expect(page.locator(".app-shell")).toHaveAttribute("inert", "");
+    await page.keyboard.press("Escape");
+    await expect(topic).toBeFocused();
+    await expect(page.locator("#evidence-panel")).toBeHidden();
+    await expect(page.locator(".app-shell")).not.toHaveAttribute("inert", "");
+    assert.equal(
+      await page.evaluate(() => {
+        const event = new KeyboardEvent("keydown", {
+          key: "k",
+          ctrlKey: true,
+          bubbles: true,
+          cancelable: true,
+        });
+        document.dispatchEvent(event);
+        return event.defaultPrevented;
+      }),
+      false,
+      "a hidden search must not swallow the browser shortcut"
+    );
+    await page.evaluate(() =>
+      window.dispatchEvent(new PageTransitionEvent("pagehide", { persisted: true }))
+    );
+    await tabs.nth(0).focus();
+    await page.keyboard.press("ArrowRight");
+    await expect(tabs.nth(1)).toBeFocused();
+  });
+});
+
+for (const reducedMotion of ["reduce", "no-preference"]) {
+  test(`report motion remains interruptible with ${reducedMotion}`, async () => {
+    await withBrowser(360, async (page) => {
+      await page.emulateMedia({ reducedMotion });
+      await page.locator("#load-demo").click();
+      await expect(page.locator("#report-view")).toBeVisible();
+      const topic = page.locator("#topic-graph .graph-node").first();
+      await topic.click();
+      await expect(page.locator("#evidence-panel")).toHaveAttribute("aria-hidden", "false");
+      await page.emulateMedia({ reducedMotion: "reduce" });
+      await expect
+        .poll(() =>
+          page.evaluate(
+            () =>
+              document.getAnimations().filter((animation) => animation.playState === "running")
+                .length
+          )
+        )
+        .toBe(0);
+      await page.locator("#close-evidence").click();
+      await topic.click();
+      await page.keyboard.press("Escape");
+      await expect(topic).toBeFocused();
+      await expect(page.locator("#evidence-panel")).toHaveAttribute("inert", "");
+      const overflow = await viewportOverflow(page);
+      assert.ok(overflow.scrollWidth <= overflow.width, JSON.stringify(overflow));
+      await page.locator("#reset-report").click();
+      await expect(page.locator("#import-view")).toBeVisible();
+      assert.equal(await page.evaluate(() => document.getAnimations().length), 0);
+    });
+  });
+}
+
+test("public-page analytics initializes before its delayed provider script", async () => {
+  await withBrowser(768, async (page) => {
+    let release;
+    const ready = new Promise((resolve) => {
+      release = resolve;
+    });
+    await page.route("https://www.clarity.ms/tag/*", async (route) => {
+      await ready;
+      await route.fulfill({
+        contentType: "text/javascript",
+        body: `
+        if (!window.clarity.v) window.clarity('event', 'sdk_ready');
+        window.providerQueue = window.clarity.q.map((entry) => Array.from(entry));
+      `,
+      });
+    });
+    try {
+      await page.goto(new URL("/about/", page.url()).href, { waitUntil: "domcontentloaded" });
+      assert.deepEqual(
+        await page.evaluate(() => window.clarity.q.map((entry) => Array.from(entry))),
+        [["set", "project_id", "chatgpt-memory-insights"]]
+      );
+      release();
+      await expect
+        .poll(() => page.evaluate(() => window.providerQueue))
+        .toEqual([
+          ["set", "project_id", "chatgpt-memory-insights"],
+          ["event", "sdk_ready"],
+        ]);
+      await expect(page.locator("h1")).toBeVisible();
+      for (const path of ["/about/", "/changelog/", "/used-by/"]) {
+        await page.route("https://www.clarity.ms/tag/*", (route) => route.abort());
+        const response = await page.goto(new URL(path, page.url()).href);
+        assert.equal(response.status(), 200);
+        await expect(page.locator("h1")).toBeVisible();
+        const brokenAnchors = await page
+          .locator('a[href^="#"]')
+          .evaluateAll((links) =>
+            links
+              .map((link) => link.getAttribute("href").slice(1))
+              .filter((id) => id && !document.getElementById(decodeURIComponent(id)))
+          );
+        assert.deepEqual(brokenAnchors, [], `${path} has broken section links`);
+        for (const width of [360, 768, 1440]) {
+          await page.setViewportSize({ width, height: 1000 });
+          const overflow = await viewportOverflow(page);
+          assert.ok(overflow.scrollWidth <= overflow.width, `${path}: ${JSON.stringify(overflow)}`);
+        }
+      }
+    } finally {
+      release();
+    }
   });
 });
 
