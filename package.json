@@ -4,7 +4,7 @@
   "private": true,
   "type": "module",
   "engines": {
-    "node": ">=22.12.0"
+    "node": ">=22.23.4"
   },
   "scripts": {
     "dev": "astro dev",
@@ -29,13 +29,18 @@
     "check": "pnpm run quality && pnpm run test:deployment && pnpm run test:installer",
     "deploy": "node scripts/deploy.mjs",
     "test:deployment": "node --test scripts/deploy.test.mjs",
-    "test:installer": "node --test scripts/install.test.mjs"
+    "test:installer": "node --test scripts/install.test.mjs",
+    "demo:build": "node scripts/build-demo.mjs",
+    "test:demo": "node scripts/qualify-demo.mjs"
   },
   "dependencies": {
     "@huggingface/transformers": "3.8.1",
-    "@observablehq/plot": "0.6.17",
+    "@saas-maker/insight-atlas": "github:sass-maker/ui-library#5209de816bcb604318670e4d318b6f313ff1ed1c&path:/packages/insight-atlas",
+    "@saas-maker/ui": "github:sass-maker/ui-library#b6cb066c83ea026de26491a9329e5f5e9cd2f892&path:/packages/ui",
     "@zip.js/zip.js": "2.8.34",
-    "astro": "7.4.2"
+    "astro": "7.4.7",
+    "react": "19.3.0",
+    "react-dom": "19.3.0"
   },
   "devDependencies": {
     "@astrojs/check": "0.9.6",
@@ -50,7 +55,9 @@
     "typescript": "5.9.3",
     "vite": "8.1.6",
     "vitest": "4.1.12",
-    "wrangler": "4.125.0"
+    "wrangler": "4.125.0",
+    "@types/react": "19.3.0",
+    "@types/react-dom": "19.3.0"
   },
   "description": "Memory Map: browser-local ChatGPT export analysis, deployed to the chatgpt-memory-insights Cloudflare Pages project (chatgpt.significanthobbies.com).",
   "packageManager": "pnpm@10.33.2",

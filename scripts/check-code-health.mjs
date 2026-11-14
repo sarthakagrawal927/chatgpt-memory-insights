@@ -95,9 +95,9 @@ function checkComplexity() {
   );
   // Ratcheted legacy debt: https://github.com/sass-maker/saas-maker/issues/213
   failRegressions("Complexity", observed, {
-    violations: 14,
+    violations: 10,
     maxCcn: 28,
-    maxLength: 208,
+    maxLength: 206,
     maxParams: 6,
   });
 }
@@ -134,9 +134,9 @@ function checkDuplication() {
   );
   // Ratcheted legacy debt: https://github.com/sass-maker/saas-maker/issues/213
   failRegressions("Duplication", observed, {
-    clones: 3,
-    duplicatedLines: 43,
-    percentage: 0.5,
+    clones: 0,
+    duplicatedLines: 0,
+    percentage: 0,
   });
 }
 

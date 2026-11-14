@@ -35,41 +35,24 @@ These are structural and craft references, not brand styles to copy.
 
 ## Palette and Material
 
-The surface is a cool transit map, not warm stationery:
-
-- `--paper: #f3f5f2` — primary field
-- `--paper-raised: #ffffff` — focused panels and controls
-- `--ink: #101b24` — primary text and structural rules
-- `--ink-muted: #5d6970` — annotation and secondary labels
-- `--rule: #cbd2d0` — map grid and separators
-- `--cobalt: #2157d5` — primary action and one route family
-- `--signal: #e44b33` — current position, errors, and one route family
-- `--teal: #168579` — completed states and one route family
-- `--amber: #d69a17` — warnings and one route family
-- `--violet: #7554c8` — one route family
-
-Route colors always pair with shape, label, or line pattern. Solid fields are
-flat; shadows are reserved for floating evidence drawers. Gradients are not
-part of the system.
-
-The Visual atlas and Story mode are bounded presentation layers within this
-system. They may use a sparse dither texture to distinguish data families and
-an oversized interchange ring as a route motif. The texture must remain
-diagrammatic rather than decorative; generic gradient surfaces remain out of
-scope.
+The atlas consumes Fleet's base theme from `@saas-maker/ui`. Its legacy palette
+names alias the shared semantic tokens for background, card, foreground, muted
+text, border, brand, success, warning and destructive states. Route colors remain
+data encodings and always pair with labels, shape or line patterns.
 
 ## Typography
 
-- UI and narrative: `Arial`, `Helvetica Neue`, system sans-serif.
-- Data, dates, counts, and file progress: `ui-monospace`, `SFMono-Regular`,
-  `Consolas`, monospace.
-- Headings use condensed proportions through weight, tracking, and max width,
-  not a decorative display font.
-- Story-mode display numerals and headlines may use `Georgia` as a bounded
-  editorial voice; the report, controls, labels, and evidence stay in the core
-  UI typography.
-- Labels use sentence case. All-caps is limited to tiny map keys and status
-  codes.
+- UI and narrative use the shared Geist sans role.
+- Headings use the shared Figtree display role and Fleet's display casing.
+- Data, dates and counts use the shared Geist Mono role.
+- Story and report views share these same type roles.
+
+## Shared components
+
+Static Astro controls and dynamic DOM controls consume the same canonical
+`@saas-maker/ui` native-control styles as the React atoms. Cards and chart frames
+use the shared Card implementation. Product composition and graph encodings stay
+in the atlas; do not recreate button, input, disclosure or surface styling there.
 
 ## Composition
 

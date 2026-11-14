@@ -10,6 +10,9 @@
   ],
   "project": ["astro.config.ts", "scripts/**/*.mjs", "src/**/*.{astro,ts}"],
   "ignoreDependencies": [
+    // Required peers of the shared UI native adapters; this app needs no React hydration.
+    "react",
+    "react-dom",
     // Invoked through the repository's metric wrapper.
     "@biomejs/biome",
     "jscpd",

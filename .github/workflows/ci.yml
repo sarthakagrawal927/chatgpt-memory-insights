@@ -36,6 +36,10 @@ jobs:
         env:
           MEMORY_MAP_TRACE_ARTIFACT_DIR: ${{ runner.temp }}/memory-map-qualification
         run: pnpm run test:import
+      - name: Qualify on-demand aggregate demo
+        env:
+          MEMORY_MAP_DEMO_ARTIFACT_DIR: ${{ runner.temp }}/memory-map-qualification
+        run: pnpm run test:demo
       - name: Retain build and qualification evidence
         uses: actions/upload-artifact@v7
         with:

@@ -1,6 +1,10 @@
 import { describe, expect, it } from "vitest";
 import { classifyQuestionLensIds } from "./insights";
-import { FORMATION_ROUTES, formationPoint, formationRouteIds } from "./graph-formation";
+import {
+  FORMATION_ROUTES,
+  formationPoint,
+  formationRouteIds,
+} from "@saas-maker/insight-atlas/graph-formation";
 import type { GraphFormationConversation } from "./types";
 
 function conversation(
