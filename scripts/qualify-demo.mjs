@@ -170,7 +170,7 @@ async function viewportOverflow(page) {
   }));
 }
 
-for (const width of [390, 768, 1440]) {
+for (const width of [360, 390, 768, 1440]) {
   test(`demo loads explicitly with truthful graphs and private controls omitted at ${width}px`, async () => {
     await withBrowser(width, async (page, app) => {
       await page.locator("#load-demo").click();
